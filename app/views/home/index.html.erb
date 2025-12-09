@@ -1,0 +1,71 @@
+<%= render "shared/public_navbar" %>
+
+<div class="home-hero">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <!-- Left text -->
+      <div class="col-md-6">
+        <h1 class="hero-title">
+          Progresser<br>
+          grâce aux<br>
+          meilleurs<br>
+          coachs
+        </h1>
+
+        <%= link_to "Trouver votre coach", login_selector_path, class: "btn btn-brown btn-lg mt-4" %>
+      </div>
+
+      <!-- Right discipline cards -->
+      <div class="col-md-6 d-flex gap-3 justify-content-end">
+        <div class="discipline-card">
+          <%= cl_image_tag("dressage_placeholder", crop: :fill, class: "discipline-img") %>
+          <div class="discipline-label">Dressage</div>
+        </div>
+
+        <div class="discipline-card">
+          <%= cl_image_tag("cso_placeholder", crop: :fill, class: "discipline-img") %>
+          <div class="discipline-label">CSO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH SECTION -->
+<div class="search-wrapper container">
+  <%= form_with url: search_path, method: :post, local: true, class: "search-bar d-flex align-items-center" do |f| %>
+
+    <div class="search-field d-flex align-items-center flex-grow-1">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <%= f.text_field :discipline, placeholder: "Discipline (CSO, Dressage...)", class: "form-control border-0" %>
+    </div>
+
+    <div class="search-field d-flex align-items-center flex-grow-1">
+      <i class="fa-solid fa-location-dot search-icon"></i>
+      <%= f.text_field :location, placeholder: "Localisation", class: "form-control border-0" %>
+    </div>
+
+    <%= f.submit "Rechercher", class: "btn btn-brown search-btn" %>
+
+  <% end %>
+</div>
+
+<!-- STATS SECTION -->
+<div class="container text-center stats-section">
+  <div class="row pt-5 pb-3">
+    <div class="col-md-4">
+      <h2 class="stat-number">120</h2>
+      <p class="stat-label">Coachs certifiés</p>
+    </div>
+
+    <div class="col-md-4">
+      <h2 class="stat-number">300</h2>
+      <p class="stat-label">Avis récoltés</p>
+    </div>
+
+    <div class="col-md-4">
+      <h2 class="stat-number">10</h2>
+      <p class="stat-label">Disciplines</p>
+    </div>
+  </div>
+</div>

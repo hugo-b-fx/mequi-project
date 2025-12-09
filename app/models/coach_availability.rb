@@ -9,7 +9,6 @@ class CoachAvailability < ApplicationRecord
 
   validate :end_time_after_start_time
 
-  serialize :days_off, Array
 
   DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'].freeze
 

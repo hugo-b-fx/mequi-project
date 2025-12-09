@@ -1,71 +1,218 @@
 <%= render "shared/public_navbar" %>
 
-<div class="home-hero">
-  <div class="container py-5">
-    <div class="row align-items-center">
-      <!-- Left text -->
-      <div class="col-md-6">
-        <h1 class="hero-title">
-          Progresser<br>
-          grâce aux<br>
-          meilleurs<br>
-          coachs
-        </h1>
+<div class="home-page">
 
-        <%= link_to "Trouver votre coach", login_selector_path, class: "btn btn-brown btn-lg mt-4" %>
-      </div>
+  <!-- HERO -->
+  <div class="home-hero">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <!-- Left text -->
+        <div class="col-md-6">
+          <h1 class="hero-title">
+            Progresser<br>
+            grâce aux<br>
+            meilleurs<br>
+            coachs
+          </h1>
 
-      <!-- Right discipline cards -->
-      <div class="col-md-6 d-flex gap-3 justify-content-end">
-        <div class="discipline-card">
-          <%= cl_image_tag("dressage_placeholder", crop: :fill, class: "discipline-img") %>
-          <div class="discipline-label">Dressage</div>
+          <%= link_to "Trouver votre coach", login_selector_path, class: "btn btn-brown btn-lg mt-4" %>
         </div>
 
-        <div class="discipline-card">
-          <%= cl_image_tag("cso_placeholder", crop: :fill, class: "discipline-img") %>
-          <div class="discipline-label">CSO</div>
+        <!-- Right discipline cards -->
+        <div class="col-md-6 d-flex gap-3 justify-content-end hero-discipline-col">
+          <div class="discipline-card">
+            <%# Remplace par cl_image_tag si tu veux %>
+            <img src="https://placehold.co/600x400?text=Dressage" class="discipline-img" alt="Dressage">
+            <div class="discipline-label">Dressage</div>
+          </div>
+
+          <div class="discipline-card">
+            <img src="https://placehold.co/600x400?text=CSO" class="discipline-img" alt="CSO">
+            <div class="discipline-label">CSO</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- SEARCH SECTION -->
-<div class="search-wrapper container">
-  <%= form_with url: search_path, method: :post, local: true, class: "search-bar d-flex align-items-center" do |f| %>
+  <!-- SEARCH BAR -->
+  <div class="search-wrapper container">
+    <%= form_with url: search_path, method: :post, local: true, class: "search-bar d-flex align-items-center" do |f| %>
 
-    <div class="search-field d-flex align-items-center flex-grow-1">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      <%= f.text_field :discipline, placeholder: "Discipline (CSO, Dressage...)", class: "form-control border-0" %>
-    </div>
+      <div class="search-field d-flex align-items-center flex-grow-1">
+        <span class="search-icon">🔍</span>
+        <%= f.text_field :discipline, placeholder: "Discipline (CSO, Dressage...)", class: "form-control border-0" %>
+      </div>
 
-    <div class="search-field d-flex align-items-center flex-grow-1">
-      <i class="fa-solid fa-location-dot search-icon"></i>
-      <%= f.text_field :location, placeholder: "Localisation", class: "form-control border-0" %>
-    </div>
+      <div class="search-field d-flex align-items-center flex-grow-1">
+        <span class="search-icon">📍</span>
+        <%= f.text_field :location, placeholder: "Localisation", class: "form-control border-0" %>
+      </div>
 
-    <%= f.submit "Rechercher", class: "btn btn-brown search-btn" %>
+      <%= f.submit "Rechercher", class: "btn btn-brown search-btn" %>
 
-  <% end %>
-</div>
+    <% end %>
+  </div>
 
-<!-- STATS SECTION -->
-<div class="container text-center stats-section">
-  <div class="row pt-5 pb-3">
-    <div class="col-md-4">
-      <h2 class="stat-number">120</h2>
-      <p class="stat-label">Coachs certifiés</p>
-    </div>
+  <!-- STATS -->
+  <div class="container text-center stats-section">
+    <div class="row pt-5 pb-3">
+      <div class="col-md-4">
+        <h2 class="stat-number">120</h2>
+        <p class="stat-label">Coachs certifiés</p>
+      </div>
 
-    <div class="col-md-4">
-      <h2 class="stat-number">300</h2>
-      <p class="stat-label">Avis récoltés</p>
-    </div>
+      <div class="col-md-4">
+        <h2 class="stat-number">300</h2>
+        <p class="stat-label">Avis récoltés</p>
+      </div>
 
-    <div class="col-md-4">
-      <h2 class="stat-number">10</h2>
-      <p class="stat-label">Disciplines</p>
+      <div class="col-md-4">
+        <h2 class="stat-number">10</h2>
+        <p class="stat-label">Disciplines</p>
+      </div>
     </div>
   </div>
+
+  <!-- DÉCOUVREZ NOS COACHS -->
+  <section class="discover-coaches-section">
+    <div class="container text-center py-5">
+      <h2 class="section-title mb-4">Découvrez nos coachs</h2>
+
+      <div class="discipline-pills d-flex flex-wrap justify-content-center gap-3">
+        <button class="discipline-pill">Coach de dressage</button>
+        <button class="discipline-pill">Coach de CCE</button>
+        <button class="discipline-pill">Coach de CSO</button>
+        <button class="discipline-pill">Coach d’éthologie</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- COACHING ADAPTÉ -->
+  <section class="coaching-banner">
+    <div class="container text-center py-4">
+      <h2 class="section-title mb-0">
+        Coaching adapté = Performance durable
+      </h2>
+    </div>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE -->
+  <section class="how-it-works-section">
+    <div class="container text-center py-5">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <p class="section-subtitle">Trouvez votre coach en 3 étapes simples</p>
+
+      <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+          <div class="hiw-step">
+            <div class="hiw-icon">🔍</div>
+            <h3>1. Recherchez</h3>
+            <p>
+              Parcourez des centaines de profils de coachs équestres qualifiés dans votre région.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="hiw-step">
+            <div class="hiw-icon">💬</div>
+            <h3>2. Contactez</h3>
+            <p>
+              Échangez gratuitement avec les coachs pour trouver celui qui vous correspond.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="hiw-step">
+            <div class="hiw-icon">📅</div>
+            <h3>3. Réservez</h3>
+            <p>
+              Planifiez votre premier cours et commencez votre progression équestre.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LES COACHS STARS -->
+  <section class="top-coaches-section">
+    <div class="container py-5">
+      <div class="text-center mb-4">
+        <h2 class="section-title">Les coachs stars qui nous ont fait confiance</h2>
+        <p class="section-subtitle">
+          Des professionnels reconnus qui transmettent leur passion.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <% 6.times do %>
+          <div class="col-md-4">
+            <div class="coach-card">
+              <img src="https://placehold.co/600x400?text=Coach" class="coach-img" alt="Coach">
+              <div class="coach-body">
+                <div class="coach-header">
+                  <h3 class="coach-name">Prénom Nom</h3>
+                  <div class="coach-rating">★ 4.9</div>
+                </div>
+                <p class="coach-location">Île-de-France • 87 avis</p>
+
+                <div class="coach-tags">
+                  <span class="coach-tag">CSO</span>
+                  <span class="coach-tag">Dressage</span>
+                  <span class="coach-tag">Compétition</span>
+                </div>
+
+                <div class="coach-footer">
+                  <div class="coach-price">60€/heure</div>
+                  <a href="#" class="btn btn-brown btn-sm">Voir profil</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEVENEZ COACH -->
+  <section class="become-coach-section">
+    <div class="container text-center py-5">
+      <h2 class="section-title">Devenez coach M'equi</h2>
+      <p class="section-subtitle">
+        Transmettez votre savoir au-delà de vos écuries et même de vos régions à des milliers
+        de cavaliers motivés grâce à des méthodes d’accompagnement hybrides.
+      </p>
+
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="become-item">
+            <div class="become-icon">👥</div>
+            <p>Développez votre portefeuille client</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="become-item">
+            <div class="become-icon">📈</div>
+            <p>Développez votre notoriété et votre visibilité</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="become-item">
+            <div class="become-icon">🗓️</div>
+            <p>Gérez votre agenda de cours de manière optimisée</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-3 mb-4">
+        Gagnez votre vie et partagez votre vocation au sein de la plus grande communauté d’élèves.
+      </p>
+
+      <a href="#" class="btn btn-brown">Devenir coach</a>
+    </div>
+  </section>
+
 </div>

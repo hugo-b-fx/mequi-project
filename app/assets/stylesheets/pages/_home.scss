@@ -1,3 +1,36 @@
+.home-page {
+  padding-top: 80px; // espace sous la navbar fixed
+}
+
+/* NAVBAR */
+.public-navbar {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  z-index: 1000;
+
+  .brand-logo {
+    font-weight: 700;
+    font-size: 20px;
+    color: #5b3e25;
+  }
+
+  .nav-link {
+    color: #4a4a4a;
+    font-size: 14px;
+
+    &:hover {
+      color: #5b3e25;
+    }
+  }
+
+  .btn-brown {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+}
+
+/* HERO */
+
 .home-hero {
   background: linear-gradient(180deg, #f0f2f5 0%, #f8f7f5 100%);
   padding-bottom: 50px;
@@ -10,11 +43,16 @@
   line-height: 1.1;
 }
 
+.hero-discipline-col {
+  gap: 16px;
+}
+
 .btn-brown {
   background-color: #7a5033;
   color: white;
   border-radius: 10px;
   padding: 10px 22px;
+  border: none;
 
   &:hover {
     background-color: #6a442a;
@@ -24,15 +62,15 @@
 
 .discipline-card {
   position: relative;
-  width: 180px;
+  width: 190px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0px 4px 25px rgba(0,0,0,0.1);
+  box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.1);
 }
 
 .discipline-img {
   width: 100%;
-  height: 180px;
+  height: 190px;
   object-fit: cover;
 }
 
@@ -44,6 +82,8 @@
   font-weight: 600;
 }
 
+/* SEARCH */
+
 .search-wrapper {
   margin-top: -30px;
   position: relative;
@@ -53,7 +93,7 @@
   background: white;
   border-radius: 20px;
   padding: 12px;
-  box-shadow: 0 4px 25px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
   gap: 15px;
 }
 
@@ -65,13 +105,15 @@
 
 .search-icon {
   margin-right: 10px;
-  color: #8a8a8a;
+  font-size: 16px;
 }
 
 .search-btn {
   border-radius: 12px;
   padding: 10px 22px;
 }
+
+/* STATS */
 
 .stats-section {
   margin-top: 50px;
@@ -84,5 +126,220 @@
 
   .stat-label {
     color: #6f6f6f;
+  }
+}
+
+/* TITRES GLOBAUX */
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #5b3e25;
+}
+
+.section-subtitle {
+  color: #777;
+  font-size: 14px;
+}
+
+/* DÉCOUVREZ NOS COACHS */
+
+.discover-coaches-section {
+  padding-top: 40px;
+  padding-bottom: 20px;
+}
+
+.discipline-pills {
+  margin-top: 10px;
+}
+
+.discipline-pill {
+  background: #f3f6ff;
+  border-radius: 999px;
+  padding: 10px 22px;
+  border: 1px solid #dde5ff;
+  font-size: 13px;
+  color: #4b4b4b;
+  cursor: pointer;
+
+  &:hover {
+    background: #e4ecff;
+  }
+}
+
+/* COACHING ADAPTÉ */
+
+.coaching-banner {
+  background: #f3f6ff;
+  margin-top: 20px;
+}
+
+/* COMMENT ÇA MARCHE */
+
+.how-it-works-section {
+  background: #fff;
+}
+
+.hiw-step {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.hiw-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #f3e2d5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 22px;
+}
+
+.hiw-step h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5b3e25;
+}
+
+.hiw-step p {
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+/* TOP COACHS */
+
+.top-coaches-section {
+  background: #f9f5f0;
+}
+
+.coach-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.coach-img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.coach-body {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.coach-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.coach-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.coach-rating {
+  font-size: 13px;
+  color: #f39c12;
+}
+
+.coach-location {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.coach-tags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.coach-tag {
+  font-size: 11px;
+  background: #f3f6ff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: #4a4a4a;
+}
+
+.coach-footer {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coach-price {
+  font-weight: 600;
+  color: #5b3e25;
+  font-size: 14px;
+}
+
+/* DEVENEZ COACH */
+
+.become-coach-section {
+  background: #f3f5f7;
+}
+
+.become-item {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.become-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f3e2d5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 20px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 767px) {
+  .hero-title {
+    font-size: 40px;
+  }
+
+  .home-hero {
+    padding-top: 20px;
+  }
+
+  .hero-discipline-col {
+    margin-top: 20px;
+    justify-content: flex-start;
+  }
+
+  .discipline-card {
+    width: 150px;
+    height: 150px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-btn {
+    width: 100%;
+    margin-top: 8px;
   }
 }

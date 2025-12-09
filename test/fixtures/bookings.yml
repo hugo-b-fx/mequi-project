@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  horse: one
+  coach: one
+  status: MyText
+  start_at: 1.5
+  end_at: 1.5
+  total_price: 1
+
+two:
+  horse: two
+  coach: two
+  status: MyText
+  start_at: 1.5
+  end_at: 1.5
+  total_price: 1

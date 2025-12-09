@@ -1,0 +1,369 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <%= link_to "← Retour", :back, class: "text-decoration-none text-muted d-inline-block mb-3" %>
+        <h1 class="mb-2 text-mequi-dark">
+          <%= @coach.persisted? ? "Modifiez votre profil coach" : "Créez votre profil coach" %>
+        </h1>
+        <p class="text-muted">
+          <%= @coach.persisted? ? "Mettez à jour vos informations" : "Renseignez vos informations pour rejoindre notre réseau de coachs" %>
+        </p>
+        <% unless @coach.persisted? %>
+          <small class="text-muted d-block">
+            Votre profil sera examiné par notre équipe sous 48h
+          </small>
+        <% end %>
+      </div>
+
+      <%= form_with model: @coach, local: true, html: { class: "coach-form" } do |f| %>
+
+        <!-- Erreurs -->
+        <% if @coach.errors.any? %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Oups ! <%= pluralize(@coach.errors.count, "erreur") %> :</strong>
+            <ul class="mb-0 mt-2">
+              <% @coach.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% end %>
+
+        <!-- Infos personnelles -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title">
+              <i class="fas fa-user"></i>
+              Informations personnelles
+            </h5>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Prénom *</label>
+                <input type="text" class="form-control-mequi form-control" value="<%= current_user.first_name %>" disabled>
+                <small class="text-muted">Modifiez depuis votre profil utilisateur</small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Nom *</label>
+                <input type="text" class="form-control-mequi form-control" value="<%= current_user.last_name %>" disabled>
+                <small class="text-muted">Modifiez depuis votre profil utilisateur</small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Email *</label>
+                <input type="email" class="form-control-mequi form-control" value="<%= current_user.email %>" disabled>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Téléphone</label>
+                <input type="tel" class="form-control-mequi form-control" value="<%= current_user.phone %>" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infos professionnelles -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title">
+              <i class="fas fa-briefcase"></i>
+              Informations professionnelles
+            </h5>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= f.label :years_experience, "Années d'expérience *", class: "form-label" %>
+                <%= f.number_field :years_experience, class: "form-control-mequi form-control", placeholder: "Ex: 15", min: 0 %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :price_per_hour, "Tarif horaire (€) *", class: "form-label" %>
+                <%= f.number_field :price_per_hour, class: "form-control-mequi form-control", placeholder: "Ex: 50", min: 0, step: 5 %>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :specialities, "Disciplines enseignées *", class: "form-label" %>
+                <small class="text-muted d-block mb-2">Sélectionnez une ou plusieurs disciplines</small>
+                <div class="row g-2">
+                  <% Coach::SPECIALITIES.each do |speciality| %>
+                    <div class="col-md-6 specialty-checkbox">
+                      <div class="form-check">
+                        <%= check_box_tag 'coach[specialities][]', speciality,
+                            @coach.specialities.include?(speciality),
+                            id: "speciality_#{speciality.parameterize}",
+                            class: "form-check-input-mequi form-check-input" %>
+                        <%= label_tag "speciality_#{speciality.parameterize}", speciality, class: "form-check-label" %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :levels, "Niveaux enseignés *", class: "form-label" %>
+                <small class="text-muted d-block mb-2">Sélectionnez les niveaux que vous enseignez</small>
+                <div class="row g-2">
+                  <% Coach::LEVELS.each do |level| %>
+                    <div class="col-md-6 level-checkbox">
+                      <div class="form-check">
+                        <%= check_box_tag 'coach[levels][]', level,
+                            @coach.levels.include?(level),
+                            id: "level_#{level.parameterize}",
+                            class: "form-check-input-mequi form-check-input" %>
+                        <%= label_tag "level_#{level.parameterize}", level, class: "form-check-label" %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :location, "Zone d'intervention *", class: "form-label" %>
+                <%= f.text_field :location, class: "form-control-mequi form-control", placeholder: "Ex: Paris 15ème ou Yvelines" %>
+                <small class="text-muted">Ville ou région où vous enseignez</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diplômes -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title">
+              <i class="fas fa-graduation-cap"></i>
+              Diplômes et certifications
+            </h5>
+
+            <div class="mb-3">
+              <%= f.label :main_diploma, "Diplôme principal *", class: "form-label" %>
+              <%= f.select :main_diploma,
+                  options_for_select([
+                    ['BPJEPS Équitation', 'BPJEPS Équitation'],
+                    ['DEJEPS', 'DEJEPS'],
+                    ['Moniteur FFE', 'Moniteur FFE'],
+                    ['Instructeur FFE', 'Instructeur FFE'],
+                    ['BEES 1', 'BEES 1'],
+                    ['BEES 2', 'BEES 2'],
+                    ['CQP', 'CQP'],
+                    ['Autre', 'Autre']
+                  ], @coach.main_diploma),
+                  { prompt: 'Sélectionnez votre diplôme' },
+                  class: "form-control-mequi form-select" %>
+            </div>
+
+            <%= f.label :other_certifications, "Autres certifications", class: "form-label" %>
+            <%= f.text_area :other_certifications,
+                class: "form-control-mequi form-control",
+                rows: 3,
+                placeholder: "Ex: IFCE, FFE, labels, certifications spécifiques..." %>
+            <small class="text-muted">Listez vos autres certifications, formations ou labels</small>
+          </div>
+        </div>
+
+        <!-- Présentation -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title">
+              <i class="fas fa-edit"></i>
+              Présentation
+            </h5>
+
+            <div class="mb-3">
+              <%= f.label :bio, "Biographie *", class: "form-label" %>
+              <%= f.text_area :bio,
+                  class: "form-control-mequi form-control",
+                  rows: 6,
+                  placeholder: "Présentez-vous, votre parcours et votre approche pédagogique..." %>
+              <small class="text-muted">Minimum 200 caractères recommandés</small>
+            </div>
+
+            <%= f.label :achievements, "Palmarès (optionnel)", class: "form-label" %>
+            <%= f.text_area :achievements,
+                class: "form-control-mequi form-control",
+                rows: 4,
+                placeholder: "Ex: Vos résultats en compétition, distinctions, prix..." %>
+          </div>
+        </div>
+
+        <!-- Disponibilités -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title">
+              <i class="fas fa-calendar-alt"></i>
+              Vos disponibilités
+            </h5>
+            <p class="text-muted mb-3">
+              Définissez vos créneaux récurrents. Vous pourrez les modifier à tout moment.
+            </p>
+
+            <div id="availabilities-container">
+              <%= f.fields_for :coach_availabilities do |availability_form| %>
+                <div class="availability-row">
+
+                  <% if availability_form.object.persisted? %>
+                    <div class="position-absolute top-0 end-0 m-2">
+                      <%= availability_form.check_box :_destroy, class: "d-none" %>
+                      <button type="button" class="btn btn-sm btn-outline-danger remove-availability">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  <% end %>
+
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label">Jours *</label>
+                      <div class="row g-2">
+                        <% CoachAvailability::DAYS.each do |day| %>
+                          <div class="col-6 col-md-4">
+                            <div class="form-check">
+                              <%= check_box_tag "coach[coach_availabilities_attributes][#{availability_form.index}][days_off][]",
+                                  day,
+                                  availability_form.object.days_off.include?(day),
+                                  id: "availability_#{availability_form.index}_day_#{day.parameterize}",
+                                  class: "form-check-input-mequi form-check-input" %>
+                              <%= label_tag "availability_#{availability_form.index}_day_#{day.parameterize}",
+                                  day,
+                                  class: "form-check-label" %>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <%= availability_form.label :start_time, "Heure de début *", class: "form-label" %>
+                      <%= availability_form.time_field :start_time, class: "form-control-mequi form-control" %>
+                    </div>
+
+                    <div class="col-md-6">
+                      <%= availability_form.label :end_time, "Heure de fin *", class: "form-label" %>
+                      <%= availability_form.time_field :end_time, class: "form-control-mequi form-control" %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <button type="button" class="btn-mequi-outline btn btn-sm mt-3" id="add-availability">
+              <i class="fas fa-plus me-2"></i>Ajouter un créneau
+            </button>
+          </div>
+        </div>
+
+        <!-- Conditions -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <div class="form-check mb-3">
+              <input class="form-check-input-mequi form-check-input" type="checkbox" id="terms" required>
+              <label class="form-check-label" for="terms">
+                J'accepte les conditions générales d'utilisation et la politique de confidentialité *
+              </label>
+            </div>
+
+            <% unless @coach.persisted? %>
+              <div class="form-check">
+                <input class="form-check-input-mequi form-check-input" type="checkbox" id="charter" required>
+                <label class="form-check-label" for="charter">
+                  Je m'engage à respecter la charte des coachs M'equi *
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="d-flex gap-3 justify-content-between">
+          <%= link_to "Annuler", :back, class: "btn btn-outline-secondary" %>
+          <%= f.submit @coach.persisted? ? "Mettre à jour mon profil" : "Soumettre ma candidature",
+              class: "btn-mequi-primary btn px-5" %>
+        </div>
+
+        <% unless @coach.persisted? %>
+          <p class="text-center text-muted mt-3 small">
+            Votre profil sera examiné par notre équipe sous 48h
+          </p>
+        <% end %>
+
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('availabilities-container');
+    const addButton = document.getElementById('add-availability');
+    let newIndex = document.querySelectorAll('.availability-row').length;
+
+    addButton.addEventListener('click', function() {
+      const template = `
+        <div class="availability-row">
+          <div class="position-absolute top-0 end-0 m-2">
+            <button type="button" class="btn btn-sm btn-outline-danger remove-availability">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Jours *</label>
+              <div class="row g-2">
+                ${['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'].map(day => `
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input type="checkbox"
+                             name="coach[coach_availabilities_attributes][${newIndex}][days_off][]"
+                             value="${day}"
+                             id="availability_${newIndex}_day_${day.toLowerCase()}"
+                             class="form-check-input-mequi form-check-input">
+                      <label for="availability_${newIndex}_day_${day.toLowerCase()}" class="form-check-label">
+                        ${day}
+                      </label>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Heure de début *</label>
+              <input type="time"
+                     name="coach[coach_availabilities_attributes][${newIndex}][start_time]"
+                     class="form-control-mequi form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Heure de fin *</label>
+              <input type="time"
+                     name="coach[coach_availabilities_attributes][${newIndex}][end_time]"
+                     class="form-control-mequi form-control">
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.insertAdjacentHTML('beforeend', template);
+      newIndex++;
+    });
+
+    container.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-availability')) {
+        const row = e.target.closest('.availability-row');
+        const destroyCheckbox = row.querySelector('input[name*="_destroy"]');
+
+        if (destroyCheckbox) {
+          destroyCheckbox.checked = true;
+          row.style.display = 'none';
+        } else {
+          row.remove();
+        }
+      }
+    });
+  });
+</script>

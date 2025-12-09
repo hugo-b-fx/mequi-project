@@ -1,3 +1,25 @@
 class CoachAvailability < ApplicationRecord
   belongs_to :coach
+
+  # Validations
+  validates :coach_id, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
+  validates :days_off, presence: true
+
+  validate :end_time_after_start_time
+
+  serialize :days_off, Array
+
+  DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'].freeze
+
+  private
+
+  def end_time_after_start_time
+    return if end_time.blank? || start_time.blank?
+
+    if end_time <= start_time
+      errors.add(:end_time, "doit être après l'heure de début")
+    end
+  end
 end

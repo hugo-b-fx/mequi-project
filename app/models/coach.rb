@@ -19,8 +19,7 @@ class Coach < ApplicationRecord
             'Amateur', 'Pro', 'Compétition'].freeze
 
   # Méthodes pour gérer les arrays (PostgreSQL)
-  serialize :specialities, Array
-  serialize :levels, Array
+  
 
   # Scopes utiles
   scope :verified, -> { where(verified: true) }

@@ -6,7 +6,6 @@
   <div class="home-hero">
     <div class="container py-5">
       <div class="row align-items-center">
-        <!-- Left text -->
         <div class="col-md-6">
           <h1 class="hero-title">
             Progresser<br>
@@ -18,10 +17,8 @@
           <%= link_to "Trouver votre coach", login_selector_path, class: "btn btn-brown btn-lg mt-4" %>
         </div>
 
-        <!-- Right discipline cards -->
         <div class="col-md-6 d-flex gap-3 justify-content-end hero-discipline-col">
           <div class="discipline-card">
-            <%# Remplace par cl_image_tag si tu veux %>
             <img src="https://placehold.co/600x400?text=Dressage" class="discipline-img" alt="Dressage">
             <div class="discipline-label">Dressage</div>
           </div>
@@ -31,6 +28,7 @@
             <div class="discipline-label">CSO</div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -108,9 +106,7 @@
           <div class="hiw-step">
             <div class="hiw-icon">🔍</div>
             <h3>1. Recherchez</h3>
-            <p>
-              Parcourez des centaines de profils de coachs équestres qualifiés dans votre région.
-            </p>
+            <p>Parcourez des centaines de profils de coachs qualifiés dans votre région.</p>
           </div>
         </div>
 
@@ -118,9 +114,7 @@
           <div class="hiw-step">
             <div class="hiw-icon">💬</div>
             <h3>2. Contactez</h3>
-            <p>
-              Échangez gratuitement avec les coachs pour trouver celui qui vous correspond.
-            </p>
+            <p>Échangez gratuitement avec les coachs pour trouver celui qui vous correspond.</p>
           </div>
         </div>
 
@@ -128,9 +122,7 @@
           <div class="hiw-step">
             <div class="hiw-icon">📅</div>
             <h3>3. Réservez</h3>
-            <p>
-              Planifiez votre premier cours et commencez votre progression équestre.
-            </p>
+            <p>Planifiez votre premier cours et commencez votre progression.</p>
           </div>
         </div>
       </div>
@@ -140,78 +132,92 @@
   <!-- LES COACHS STARS -->
   <section class="top-coaches-section">
     <div class="container py-5">
+
       <div class="text-center mb-4">
         <h2 class="section-title">Les coachs stars qui nous ont fait confiance</h2>
-        <p class="section-subtitle">
-          Des professionnels reconnus qui transmettent leur passion.
-        </p>
+        <p class="section-subtitle">Des professionnels reconnus qui transmettent leur passion.</p>
       </div>
 
       <div class="row g-4">
-        <% 6.times do %>
+        <% @coaches.each do |coach| %>
           <div class="col-md-4">
             <div class="coach-card">
-              <img src="https://placehold.co/600x400?text=Coach" class="coach-img" alt="Coach">
+
+              <% if coach.user.photo.attached? %>
+                <%= image_tag coach.user.photo, class: "coach-img", alt: coach.user.full_name %>
+              <% else %>
+                <img src="https://placehold.co/600x400?text=Coach" class="coach-img" alt="Coach">
+              <% end %>
+
               <div class="coach-body">
+
                 <div class="coach-header">
-                  <h3 class="coach-name">Prénom Nom</h3>
-                  <div class="coach-rating">★ 4.9</div>
+                  <h3 class="coach-name"><%= coach.user.full_name %></h3>
+                  <div class="coach-rating">★ <%= coach.average_rating || 4.9 %></div>
                 </div>
-                <p class="coach-location">Île-de-France • 87 avis</p>
+
+                <p class="coach-location"><%= coach.location %></p>
 
                 <div class="coach-tags">
-                  <span class="coach-tag">CSO</span>
-                  <span class="coach-tag">Dressage</span>
-                  <span class="coach-tag">Compétition</span>
+                  <% coach.specialities.split(",").first(3).each do |tag| %>
+                    <span class="coach-tag"><%= tag.strip %></span>
+                  <% end %>
                 </div>
 
                 <div class="coach-footer">
-                  <div class="coach-price">60€/heure</div>
-                  <%= link_to "Voir profil", coach_path(1), class: "btn btn-brown btn-sm" %>
+                  <div class="coach-price"><%= coach.price_per_session %>€/séance</div>
+
+                  <%= link_to "Voir profil", coach_path(coach), class: "btn btn-brown btn-sm" %>
                 </div>
               </div>
+
             </div>
           </div>
         <% end %>
       </div>
+
     </div>
   </section>
 
   <!-- DEVENEZ COACH -->
   <section class="become-coach-section">
     <div class="container text-center py-5">
+
       <h2 class="section-title">Devenez coach M'equi</h2>
+
       <p class="section-subtitle">
-        Transmettez votre savoir au-delà de vos écuries et même de vos régions à des milliers
-        de cavaliers motivés grâce à des méthodes d’accompagnement hybrides.
+        Transmettez votre savoir au-delà de vos écuries grâce à l’accompagnement hybride.
       </p>
 
       <div class="row mt-4">
         <div class="col-md-4 mb-3">
           <div class="become-item">
             <div class="become-icon">👥</div>
-            <p>Développez votre portefeuille client</p>
+            <p>Développez votre clientèle</p>
           </div>
         </div>
+
         <div class="col-md-4 mb-3">
           <div class="become-item">
             <div class="become-icon">📈</div>
-            <p>Développez votre notoriété et votre visibilité</p>
+            <p>Augmentez votre visibilité</p>
           </div>
         </div>
+
         <div class="col-md-4 mb-3">
           <div class="become-item">
             <div class="become-icon">🗓️</div>
-            <p>Gérez votre agenda de cours de manière optimisée</p>
+            <p>Gérez votre agenda facilement</p>
           </div>
         </div>
       </div>
 
       <p class="mt-3 mb-4">
-        Gagnez votre vie et partagez votre vocation au sein de la plus grande communauté d’élèves.
+        Rejoignez la plus grande communauté de cavaliers motivés.
       </p>
 
       <a href="#" class="btn btn-brown">Devenir coach</a>
+
     </div>
   </section>
 

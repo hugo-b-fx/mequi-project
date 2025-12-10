@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :horses, dependent: :destroy
   has_many :chats, dependent: :destroy
   has_many :coach_chats, class_name: "Chat", foreign_key: "coach_id"
+  has_one_attached :photo
 
   def full_name
     "#{first_name} #{last_name}".strip

@@ -2,8 +2,8 @@ class Coach < ApplicationRecord
   belongs_to :user
   has_many :bookings
   has_many :coach_availabilities
+  has_many :reviews, through: :bookings
 
-# Validations
   validates :user_id, presence: true, uniqueness: true
   validates :specialities, presence: true
   validates :level, presence: true
@@ -11,21 +11,23 @@ class Coach < ApplicationRecord
   validates :price_per_session, presence: true, numericality: { greater_than: 0 }
   validates :years_experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  # Enums pour les spécialités (basé sur les maquettes)
-  SPECIALITIES = ['CSO', 'Dressage', 'CCE', 'Endurance', 'Voltige', 'TREC',
-                  'Horse-ball', 'Attelage', 'Équitation western', 'Éthologie'].freeze
+  delegate :bio, :first_name, :last_name, :photo, to: :user
 
-  LEVEL = ['Débutant', 'Galop 1-2', 'Galop 3-4', 'Galop 5-6', 'Galop 7+',
-            'Amateur', 'Pro', 'Compétition'].freeze
+  SPECIALITIES = [
+    'CSO', 'Dressage', 'CCE', 'Endurance', 'Voltige', 'TREC',
+    'Horse-ball', 'Attelage', 'Équitation western', 'Éthologie'
+  ].freeze
 
-  # Méthodes pour gérer les arrays (PostgreSQL)
+  LEVEL = [
+    'Débutant', 'Galop 1-2', 'Galop 3-4', 'Galop 5-6', 'Galop 7+',
+    'Amateur', 'Pro', 'Compétition'
+  ].freeze
 
-
-  # Scopes utiles
   scope :verified, -> { where(verified: true) }
   scope :active, -> { where(active: true) }
   scope :by_location, ->(location) { where("location ILIKE ?", "%#{location}%") }
   scope :by_speciality, ->(speciality) { where("? = ANY(specialities)", speciality) }
+
 
   def average_rating
     reviews.average(:rating).to_f.round(1)
@@ -37,11 +39,15 @@ class Coach < ApplicationRecord
 
   def satisfaction_rate
     return 0 if reviews.empty?
+
     ((reviews.where("rating >= ?", 4).count.to_f / reviews.count) * 100).round
   end
 
   def total_students
-    bookings.where(status: 'completed').select(:user_id).distinct.count
+    bookings
+      .joins(:horse)
+      .select("DISTINCT horses.user_id")
+      .count
   end
 
   def full_name
@@ -49,11 +55,10 @@ class Coach < ApplicationRecord
   end
 
   def availability_for_day(day_name)
-    coach_availabilities.where("? = ANY(days_off)", day_name).first
+    coach_availabilities.find { |a| a.days_off.include?(day_name) }
   end
 
   def available_days
-    coach_availabilities.map { |a| a.days_off }.flatten.uniq
+    coach_availabilities.flat_map(&:days_off).uniq
   end
-
 end

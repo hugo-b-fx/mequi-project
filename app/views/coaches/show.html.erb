@@ -1,370 +1,357 @@
-<div class="container py-4">
+<div class="coach-show-page bg-light">
+
   <!-- Lien retour -->
-  <%= link_to "← Retour aux coachs", coaches_path, class: "text-decoration-none text-muted mb-3 d-inline-block" %>
+  <div class="container pt-4">
+    <%= link_to "← Retour aux coachs", root_path, class: "text-decoration-none text-muted mb-3 d-inline-block" %>
+  </div>
 
-  <!-- Header avec bannière dégradée MEQUI -->
-  <div class="coach-header-banner" style="height: 200px;">
-    <div class="container h-100 d-flex align-items-end pb-4">
-      <div class="row w-100 align-items-end">
-        <!-- Photo de profil -->
-        <div class="col-auto">
-          <div class="coach-profile-photo" style="margin-bottom: -50px;">
-            <% if @coach.user.photo.attached? %>
-              <%= image_tag @coach.user.photo, class: "rounded-circle border border-4 border-white shadow", style: "width: 150px; height: 150px; object-fit: cover;" %>
-            <% else %>
-              <div class="rounded-circle border border-4 border-white shadow bg-light d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
-                <i class="fas fa-user fa-3x text-muted"></i>
-              </div>
-            <% end %>
+  <!-- HERO / BANNIÈRE -->
+  <div class="coach-header-banner"
+       style="background: linear-gradient(120deg, #5f3b2f 0%, #8b5c42 40%, #7b93c9 100%); min-height: 220px;">
+    <div class="container py-4">
+      <div class="row align-items-center">
 
-            <!-- Badge vérifié -->
-            <% if @coach.verified %>
-              <div class="verified-badge">
-                <i class="fas fa-check"></i>
-              </div>
-            <% end %>
+        <!-- Photo + identité -->
+        <div class="col-md-auto mb-3 mb-md-0">
+          <div class="position-relative">
+            <div class="rounded-circle border border-4 border-white shadow-lg overflow-hidden"
+                 style="width: 140px; height: 140px; background: #f8f5f2;">
+              <% if @coach.user.respond_to?(:photo) && @coach.user.photo.attached? %>
+                <%= image_tag @coach.user.photo,
+                              class: "w-100 h-100",
+                              style: "object-fit: cover;",
+                              alt: @coach.user.full_name %>
+              <% else %>
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-user fa-3x text-muted"></i>
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
 
-        <!-- Infos principales -->
-        <div class="col">
-          <div class="text-white">
-            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-              <h1 class="h2 mb-0"><%= @coach.full_name %></h1>
-              <% if @coach.verified %>
-                <span class="badge-mequi">
-                  <i class="fas fa-star me-1"></i> Coach Vérifié
+        <!-- Infos coach -->
+        <div class="col-md-6 text-white">
+          <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+            <h1 class="h2 mb-0"><%= @coach.user.full_name %></h1>
+          </div>
+
+          <% specialities = (@coach.specialities || "").split(",").map(&:strip) %>
+
+          <p class="mb-2 opacity-75">
+            Spécialiste
+            <% if specialities.any? %>
+              <strong><%= specialities.first(2).join(" & ") %></strong>
+            <% end %>
+          </p>
+
+          <div class="d-flex flex-wrap align-items-center gap-3 small">
+            <span>
+              <i class="fas fa-star text-warning me-1"></i>
+              <strong><%= @coach.average_rating %></strong>
+              <span class="opacity-75">(<%= @coach.total_reviews %> avis)</span>
+            </span>
+
+            <span>
+              <i class="fas fa-map-marker-alt me-1"></i>
+              <%= @coach.location %>
+            </span>
+
+            <span>
+              <i class="fas fa-clock me-1"></i>
+              <%= @coach.years_experience %> ans d'expérience
+            </span>
+          </div>
+
+          <% if specialities.any? %>
+            <div class="mt-3 d-flex flex-wrap gap-2">
+              <% specialities.first(3).each do |spec| %>
+                <span class="badge rounded-pill px-3 py-2"
+                      style="background:#f5efe9; color:#5f3b2f; font-weight:500;">
+                  <i class="fas fa-horse-head me-1"></i><%= spec %>
                 </span>
               <% end %>
-              <% if @coach.active %>
-                <span class="badge bg-success">Actif</span>
-              <% end %>
             </div>
-            <p class="mb-2 opacity-75">
-              Spécialiste <%= @coach.specialities.first(2).join(' & ') %>
-            </p>
-            <div class="d-flex align-items-center gap-3 flex-wrap small">
-              <span>
-                <i class="fas fa-star text-warning me-1"></i>
-                <strong><%= @coach.average_rating %></strong> (<%= @coach.total_reviews %> avis)
-              </span>
-              <span>
-                <i class="fas fa-map-marker-alt me-1"></i>
-                <%= @coach.location %>
-              </span>
-              <span>
-                <i class="fas fa-clock me-1"></i>
-                <%= @coach.years_experience %> ans d'expérience
-              </span>
+          <% end %>
+        </div>
+
+        <!-- Bloc prix rapide (rappel) -->
+        <div class="col-md-4 mt-4 mt-md-0">
+          <div class="card border-0 shadow-lg rounded-4 bg-white">
+            <div class="card-body text-center">
+              <small class="text-muted d-block mb-1">À partir de</small>
+              <h2 class="mb-1" style="color:#5f3b2f;">
+                <%= @coach.price_per_session %>€
+                <small class="text-muted fs-6">/séance</small>
+              </h2>
+
+              <div class="d-flex flex-column gap-2 mt-3">
+                <% if user_signed_in? %>
+                  <a href="#booking-card" class="btn btn-brown w-100">
+                    Réserver une séance
+                  </a>
+                  <%= link_to "Envoyer un message",
+                              new_user_session_path,
+                              class: "btn btn-outline-secondary w-100" %>
+                <% else %>
+                  <%= link_to "Créer un compte pour réserver",
+                              new_user_registration_path,
+                              class: "btn btn-brown w-100" %>
+                  <%= link_to "Se connecter",
+                              new_user_session_path,
+                              class: "btn btn-outline-secondary w-100" %>
+                <% end %>
+              </div>
+
+              <small class="text-muted d-block mt-2">
+                <i class="fas fa-clock me-1"></i>Répond en &lt; 1h
+              </small>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <div class="row g-4 mt-4">
-    <!-- Colonne gauche - Contenu principal -->
-    <div class="col-lg-8">
+  <!-- CONTENU PRINCIPAL -->
+  <div class="container my-5">
+    <div class="row g-4">
 
-      <!-- Stats rapides -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <div class="row text-center g-3">
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @coach.total_students %>+</div>
-                <div class="stat-label">Élèves formés</div>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @coach.yyears_experience %> ans</div>
-                <div class="stat-label">D'expérience</div>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @coach.satisfaction_rate %>%</div>
-                <div class="stat-label">Satisfaction</div>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @coach.total_reviews %></div>
-                <div class="stat-label">Avis vérifiés</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- COLONNE GAUCHE -->
+      <div class="col-lg-8">
 
-      <!-- À propos -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <h5 class="form-section-title">
-            <i class="fas fa-user-circle"></i>
-            À propos de <%= @coach.user.first_name %>
-          </h5>
-          <p class="text-muted"><%= simple_format(@coach.bio) %></p>
-
-          <% if @coach.quote.present? %>
-            <blockquote class="card-mequi-highlight p-3 mt-4 rounded">
-              <p class="mb-0 fst-italic text-mequi-primary">"<%= @coach.quote %>"</p>
-            </blockquote>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- Pourquoi choisir ce coach -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <h5 class="form-section-title">
-            <i class="fas fa-heart text-danger"></i>
-            Pourquoi choisir ce coach ?
-          </h5>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="d-flex gap-2 align-items-start">
-                <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
-                <span><strong>Patience exceptionnelle avec les débutants</strong></span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="d-flex gap-2 align-items-start">
-                <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
-                <span><strong>Méthode douce et progressive</strong></span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="d-flex gap-2 align-items-start">
-                <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
-                <span><strong>Communication claire et encourageante</strong></span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="d-flex gap-2 align-items-start">
-                <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
-                <span><strong>Spécialiste de la mise en confiance</strong></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Avis des élèves -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <h5 class="form-section-title">
-            <i class="fas fa-comments"></i>
-            Ce que disent mes élèves
-          </h5>
-
-          <% if @reviews.any? %>
-            <% @reviews.each do |review| %>
-              <div class="review-card mb-3">
-                <div class="d-flex align-items-center gap-3 mb-2">
-                  <% if review.user.photo.attached? %>
-                    <%= image_tag review.user.photo, class: "rounded-circle", style: "width: 50px; height: 50px; object-fit: cover;" %>
-                  <% else %>
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                      <i class="fas fa-user text-muted"></i>
-                    </div>
-                  <% end %>
-
-                  <div>
-                    <strong><%= review.user.first_name %> <%= review.user.last_name %></strong>
-                    <div class="star-rating">
-                      <%= '★' * review.rating.to_i %>
-                      <span class="text-muted small">• Il y a <%= time_ago_in_words(review.created_at) %></span>
-                    </div>
-                  </div>
+        <!-- Stats -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <div class="row text-center g-3">
+              <div class="col-6 col-md-3">
+                <div class="stat-card">
+                  <div class="stat-number"><%= @coach.total_students %>+</div>
+                  <div class="stat-label">Élèves formés</div>
                 </div>
-                <p class="text-muted mb-0">"<%= review.comment %>"</p>
               </div>
-            <% end %>
-          <% else %>
-            <p class="text-muted">Aucun avis pour le moment</p>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- Palmarès -->
-      <% if @coach.achievements.present? %>
-        <div class="card-mequi mb-4">
-          <div class="card-body">
-            <h5 class="form-section-title">
-              <i class="fas fa-trophy text-warning"></i>
-              Palmarès & Accomplissements
-            </h5>
-            <%= simple_format(@coach.achievements) %>
+              <div class="col-6 col-md-3">
+                <div class="stat-card">
+                  <div class="stat-number"><%= @coach.years_experience %> ans</div>
+                  <div class="stat-label">D'expérience</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="stat-card">
+                  <div class="stat-number"><%= @coach.satisfaction_rate %>%</div>
+                  <div class="stat-label">Taux de satisfaction</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="stat-card">
+                  <div class="stat-number"><%= @coach.total_reviews %></div>
+                  <div class="stat-label">Avis vérifiés</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      <% end %>
 
-      <!-- Mes chevaux -->
-      <% if @horses.any? %>
+        <!-- À propos -->
         <div class="card-mequi mb-4">
           <div class="card-body">
-            <h5 class="form-section-title">
-              <i class="fas fa-horse"></i>
-              Mes chevaux
+            <h5 class="form-section-title mb-3">
+              <i class="fas fa-user-circle me-2"></i>
+              À propos de <%= @coach.user.first_name %>
             </h5>
+
+            <p class="text-muted mb-0">
+              <% bio_text = @coach.user.respond_to?(:bio) ? @coach.user.bio : nil %>
+              <%= bio_text.present? ? simple_format(bio_text) : "Ce coach n'a pas encore renseigné de description détaillée." %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Pourquoi choisir ce coach -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title mb-3">
+              <i class="fas fa-heart text-danger me-2"></i>
+              Pourquoi choisir ce coach ?
+            </h5>
+
             <div class="row g-3">
-              <% @horses.each do |horse| %>
+              <% [
+                "Patience exceptionnelle avec les débutants",
+                "Méthode douce et progressive",
+                "Communication claire et encourageante",
+                "Spécialiste de la mise en confiance"
+              ].each do |reason| %>
                 <div class="col-md-6">
-                  <div class="card-mequi h-100">
-                    <div class="card-body text-center">
-                      <% if horse.photos.attached? %>
-                        <%= image_tag horse.photos.first, class: "rounded-circle mb-2", style: "width: 80px; height: 80px; object-fit: cover;" %>
-                      <% else %>
-                        <div class="rounded-circle bg-mequi-light d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 80px; height: 80px;">
-                          <i class="fas fa-horse fa-2x text-mequi-primary"></i>
-                        </div>
-                      <% end %>
-                      <h6 class="mb-1"><%= horse.name %></h6>
-                      <small class="text-muted d-block"><%= horse.discipline %></small>
-                      <small class="badge-mequi-light mt-2"><%= horse.breed %></small>
-                    </div>
+                  <div class="d-flex gap-2 align-items-start p-2 rounded-3"
+                       style="background:#f8f5f2;">
+                    <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                    <span><strong><%= reason %></strong></span>
                   </div>
                 </div>
               <% end %>
             </div>
           </div>
         </div>
-      <% end %>
 
-    </div>
+        <!-- Avis -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h5 class="form-section-title mb-3">
+              <i class="fas fa-comments me-2"></i>
+              Ce que disent ses élèves
+            </h5>
 
-    <!-- Colonne droite - RÉSERVATION -->
-    <div class="col-lg-4">
+            <% if @reviews.any? %>
+              <% @reviews.each do |review| %>
+                <div class="review-card mb-3 p-3 rounded-3" style="background:#f8f5f2;">
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    <% if review.user.respond_to?(:photo) && review.user.photo.attached? %>
+                      <%= image_tag review.user.photo,
+                                    class: "rounded-circle",
+                                    style: "width: 48px; height: 48px; object-fit: cover;" %>
+                    <% else %>
+                      <div class="rounded-circle bg-white d-flex align-items-center justify-content-center"
+                           style="width: 48px; height: 48px;">
+                        <i class="fas fa-user text-muted"></i>
+                      </div>
+                    <% end %>
 
-      <div class="card-mequi shadow-mequi-lg sticky-top" style="top: 20px;">
-        <div class="card-body">
+                    <div>
+                      <strong><%= review.user.first_name %> <%= review.user.last_name %></strong>
+                      <div class="star-rating small">
+                        <span class="me-1" style="color:#f2b01e;">
+                          <%= '★' * review.rating.to_i %>
+                        </span>
+                        <span class="text-muted">
+                          • il y a <%= time_ago_in_words(review.created_at) %>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-          <!-- Prix -->
-          <div class="text-center mb-3">
-            <small class="text-muted d-block">À partir de</small>
-            <h2 class="text-mequi-primary mb-0">
-              <%= @coach.price_per_hour %>€
-              <small class="text-muted fs-6">/heure</small>
-            </h2>
+                  <p class="text-muted mb-0">"<%= review.comment %>"</p>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="text-muted mb-0">
+                Aucun avis n’a encore été publié pour ce coach.
+              </p>
+            <% end %>
           </div>
+        </div>
 
-          <% if user_signed_in? %>
+      </div>
 
-            <!-- FORMULAIRE DE RÉSERVATION (Ultra simple) -->
-            <%= form_with url: bookings_path, method: :post do |f| %>
+      <!-- COLONNE DROITE -->
+      <div class="col-lg-4">
 
-              <%= hidden_field_tag :coach_id, @coach.id %>
+        <!-- Booking card complète -->
+        <div id="booking-card" class="card-mequi shadow-mequi-lg mb-4 sticky-top" style="top: 20px;">
+          <div class="card-body">
 
-              <!-- Cheval -->
-              <div class="mb-3">
-                <label class="form-label">Votre cheval</label>
-                <%= select_tag :horse_id,
-                  options_from_collection_for_select(current_user.horses, :id, :name),
-                  class: "form-select",
-                  required: true %>
-              </div>
+            <div class="text-center mb-3">
+              <small class="text-muted d-block">Tarif</small>
+              <h2 class="text-mequi-primary mb-0" style="color:#5f3b2f;">
+                <%= @coach.price_per_session %>€
+                <small class="text-muted fs-6">/séance</small>
+              </h2>
+            </div>
 
-              <!-- Début -->
-              <div class="mb-3">
-                <label class="form-label">Début de séance</label>
-                <%= datetime_field_tag "booking[start_at]", nil, class: "form-control", required: true %>
-              </div>
+            <% if user_signed_in? %>
+              <%= form_with url: bookings_path, method: :post do %>
+                <%= hidden_field_tag :coach_id, @coach.id %>
 
-              <!-- Fin -->
-              <div class="mb-3">
-                <label class="form-label">Fin de séance</label>
-                <%= datetime_field_tag "booking[end_at]", nil, class: "form-control", required: true %>
-              </div>
+                <div class="mb-3">
+                  <label class="form-label">Votre cheval</label>
+                  <% if current_user.horses.any? %>
+                    <%= select_tag :horse_id,
+                                   options_from_collection_for_select(current_user.horses, :id, :name),
+                                   class: "form-select",
+                                   required: true %>
+                  <% else %>
+                    <select class="form-select" disabled>
+                      <option>Aucun cheval enregistré</option>
+                    </select>
+                    <small class="text-muted">
+                      Ajoutez un cheval dans votre espace pour réserver une séance.
+                    </small>
+                  <% end %>
+                </div>
 
-              <%= f.submit "📞 Réserver ce créneau", class: "btn-mequi-primary btn w-100" %>
+                <div class="mb-3">
+                  <label class="form-label">Début de séance</label>
+                  <%= datetime_field_tag "booking[start_at]", nil,
+                                         class: "form-control",
+                                         required: true %>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Fin de séance</label>
+                  <%= datetime_field_tag "booking[end_at]", nil,
+                                         class: "form-control",
+                                         required: true %>
+                </div>
+
+                <%= submit_tag "📞 Réserver ce créneau", class: "btn-mequi-primary btn w-100" %>
+              <% end %>
+            <% else %>
+              <%= link_to "📞 Réserver maintenant",
+                          new_user_registration_path,
+                          class: "btn-mequi-primary btn w-100 mb-2" %>
+              <%= link_to "✉️ Se connecter pour envoyer un message",
+                          new_user_session_path,
+                          class: "btn-mequi-outline btn w-100" %>
             <% end %>
 
-          <% else %>
-
-            <!-- Si non connecté -->
-            <%= link_to "📞 Réserver maintenant", new_user_registration_path, class: "btn-mequi-primary btn w-100 mb-2" %>
-            <%= link_to "✉️ Envoyer un message", new_user_session_path, class: "btn-mequi-outline btn w-100" %>
-
-          <% end %>
-
-          <small class="text-muted d-block text-center mt-2">
-            <i class="fas fa-clock me-1"></i>
-            Répond en < 1h
-          </small>
-        </div>
-      </div>
-
-      <!-- Certifications -->
-      <div class="card-mequi mt-4">
-        <div class="card-body">
-          <h6 class="form-section-title mb-3">
-            <i class="fas fa-certificate"></i>
-            Certifications
-          </h6>
-
-          <div class="certification-card mb-3">
-            <div class="d-flex gap-2">
-              <i class="fas fa-graduation-cap flex-shrink-0"></i>
-              <div>
-                <strong class="d-block"><%= @coach.main_diploma || "BPJEPS Équitation" %></strong>
-                <small class="text-muted">2009</small>
-              </div>
-            </div>
+            <small class="text-muted d-block text-center mt-2">
+              <i class="fas fa-lock me-1"></i>Paiement sécurisé & assistance M’equi
+            </small>
           </div>
-
-          <% if @coach.other_certifications.present? %>
-            <div class="certification-card">
-              <div class="d-flex gap-2">
-                <i class="fas fa-award text-success flex-shrink-0"></i>
-                <div>
-                  <small class="text-muted"><%= @coach.other_certifications %></small>
-                </div>
-              </div>
-            </div>
-          <% end %>
         </div>
-      </div>
 
-      <!-- Disponibilités -->
-      <div class="card-mequi mt-4">
-        <div class="card-body">
-          <h6 class="form-section-title mb-3">
-            <i class="fas fa-calendar-alt"></i>
-            Disponibilités
-          </h6>
+        <!-- Disponibilités -->
+        <div class="card-mequi mb-4">
+          <div class="card-body">
+            <h6 class="form-section-title mb-3">
+              <i class="fas fa-calendar-alt me-2"></i>
+              Disponibilités
+            </h6>
 
-          <% if @availabilities.any? %>
-            <% @availabilities.each do |availability| %>
-              <% availability.days_off.each do |day| %>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <strong><%= day %></strong>
-                  <span class="availability-badge">
-                    <%= availability.start_time.strftime("%Hh%M") %>-<%= availability.end_time.strftime("%Hh%M") %>
+            <% if @availabilities.any? %>
+              <% @availabilities.each do |availability| %>
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded-3"
+                     style="background:#f8f5f2;">
+                  <strong class="text-capitalize"><%= availability.days_off %></strong>
+                  <span class="availability-badge px-3 py-1 rounded-pill"
+                        style="background:#e0e8ff; color:#26427d; font-size:0.85rem;">
+                    <%= availability.start_time.strftime("%Hh%M") %> – <%= availability.end_time.strftime("%Hh%M") %>
                   </span>
                 </div>
               <% end %>
+            <% else %>
+              <p class="text-muted small mb-0">
+                Les disponibilités de ce coach ne sont pas encore renseignées.
+              </p>
             <% end %>
-          <% else %>
-            <p class="text-muted small mb-0">Contactez le coach pour connaître ses disponibilités</p>
-          <% end %>
+          </div>
         </div>
-      </div>
 
-      <!-- Garantie -->
-      <div class="card-mequi mt-4 bg-mequi-light">
-        <div class="card-body text-center">
-          <i class="fas fa-shield-alt text-mequi-primary fa-3x mb-2"></i>
-          <h6 class="text-mequi-primary">Garantie M'equi</h6>
-          <small class="text-muted">
-            Coach vérifié et certifié. Satisfait ou remboursé sur votre première séance.
-          </small>
+        <!-- Garantie -->
+        <div class="card-mequi bg-mequi-light">
+          <div class="card-body text-center">
+            <i class="fas fa-shield-alt fa-2x mb-2" style="color:#5f3b2f;"></i>
+            <h6 class="text-mequi-primary mb-1" style="color:#5f3b2f;">Garantie M’equi</h6>
+            <small class="text-muted d-block">
+              Coach évalué par la communauté. Accompagnement client en cas de problème sur votre première séance.
+            </small>
+          </div>
         </div>
+
       </div>
 
     </div>
   </div>
+
 </div>

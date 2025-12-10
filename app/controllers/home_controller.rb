@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
+    @coaches = Coach.includes(:user).limit(6)
   end
 
   def search

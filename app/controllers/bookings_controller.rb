@@ -6,7 +6,7 @@ class BookingsController < ApplicationController
     @horse = current_user.horses.find(params[:horse_id])
 
     duration_hours = ((booking_params[:end_at].to_time - booking_params[:start_at].to_time) / 3600).round
-    total_price = duration_hours * @coach.price_per_hour
+    total_price = duration_hours * @coach.price_per_session
 
     @booking = Booking.new(
       coach: @coach,

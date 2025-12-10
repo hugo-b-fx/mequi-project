@@ -79,7 +79,7 @@
             </div>
             <div class="col-6 col-md-3">
               <div class="stat-card">
-                <div class="stat-number"><%= @coach.years_experience %> ans</div>
+                <div class="stat-number"><%= @coach.yyears_experience %> ans</div>
                 <div class="stat-label">D'expérience</div>
               </div>
             </div>
@@ -123,6 +123,7 @@
             <i class="fas fa-heart text-danger"></i>
             Pourquoi choisir ce coach ?
           </h5>
+
           <div class="row g-3">
             <div class="col-md-6">
               <div class="d-flex gap-2 align-items-start">
@@ -183,10 +184,6 @@
                 <p class="text-muted mb-0">"<%= review.comment %>"</p>
               </div>
             <% end %>
-
-            <% if @all_reviews_count > 2 %>
-              <%= link_to "Voir tous les avis (#{@all_reviews_count})", "#", class: "btn-mequi-outline btn-sm" %>
-            <% end %>
           <% else %>
             <p class="text-muted">Aucun avis pour le moment</p>
           <% end %>
@@ -240,12 +237,13 @@
 
     </div>
 
-    <!-- Colonne droite - Réservation -->
+    <!-- Colonne droite - RÉSERVATION -->
     <div class="col-lg-4">
 
-      <!-- Card de réservation -->
       <div class="card-mequi shadow-mequi-lg sticky-top" style="top: 20px;">
         <div class="card-body">
+
+          <!-- Prix -->
           <div class="text-center mb-3">
             <small class="text-muted d-block">À partir de</small>
             <h2 class="text-mequi-primary mb-0">
@@ -255,11 +253,42 @@
           </div>
 
           <% if user_signed_in? %>
-            <%= link_to "📞 Réserver maintenant", new_booking_path(coach_id: @coach.id), class: "btn-mequi-primary btn w-100 mb-2" %>
-            <%= link_to "✉️ Envoyer un message", new_chat_path(coach_id: @coach.id), class: "btn-mequi-outline btn w-100" %>
+
+            <!-- FORMULAIRE DE RÉSERVATION (Ultra simple) -->
+            <%= form_with url: bookings_path, method: :post do |f| %>
+
+              <%= hidden_field_tag :coach_id, @coach.id %>
+
+              <!-- Cheval -->
+              <div class="mb-3">
+                <label class="form-label">Votre cheval</label>
+                <%= select_tag :horse_id,
+                  options_from_collection_for_select(current_user.horses, :id, :name),
+                  class: "form-select",
+                  required: true %>
+              </div>
+
+              <!-- Début -->
+              <div class="mb-3">
+                <label class="form-label">Début de séance</label>
+                <%= datetime_field_tag "booking[start_at]", nil, class: "form-control", required: true %>
+              </div>
+
+              <!-- Fin -->
+              <div class="mb-3">
+                <label class="form-label">Fin de séance</label>
+                <%= datetime_field_tag "booking[end_at]", nil, class: "form-control", required: true %>
+              </div>
+
+              <%= f.submit "📞 Réserver ce créneau", class: "btn-mequi-primary btn w-100" %>
+            <% end %>
+
           <% else %>
+
+            <!-- Si non connecté -->
             <%= link_to "📞 Réserver maintenant", new_user_registration_path, class: "btn-mequi-primary btn w-100 mb-2" %>
             <%= link_to "✉️ Envoyer un message", new_user_session_path, class: "btn-mequi-outline btn w-100" %>
+
           <% end %>
 
           <small class="text-muted d-block text-center mt-2">

@@ -1,12 +1,23 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  has_many :messages  #, :reviews, :coaches, :horses, :chats
-  has_many :reviews
-  has_many :coaches
-  has_many :horses
-  has_many :chats
-  has_many :coach_chats, class_name: "Chats", foreign_key: "coach_id"
+
+  has_many :messages, dependent: :destroy
+  has_many :reviews, dependent: :destroy
+  has_many :coaches, dependent: :destroy
+  has_many :horses, dependent: :destroy
+  has_many :chats, dependent: :destroy
+  has_many :coach_chats, class_name: "Chat", foreign_key: "coach_id"
+
+  def full_name
+    "#{first_name} #{last_name}".strip
+  end
+
+  def coach?
+    role == "coach"
+  end
+
+  def rider?
+    role == "rider"
+  end
 end

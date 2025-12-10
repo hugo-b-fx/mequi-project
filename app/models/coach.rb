@@ -6,20 +6,20 @@ class Coach < ApplicationRecord
 # Validations
   validates :user_id, presence: true, uniqueness: true
   validates :specialities, presence: true
-  validates :levels, presence: true
+  validates :level, presence: true
   validates :location, presence: true
-  validates :price_per_hour, presence: true, numericality: { greater_than: 0 }
+  validates :price_per_session, presence: true, numericality: { greater_than: 0 }
   validates :years_experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   # Enums pour les spécialités (basé sur les maquettes)
   SPECIALITIES = ['CSO', 'Dressage', 'CCE', 'Endurance', 'Voltige', 'TREC',
                   'Horse-ball', 'Attelage', 'Équitation western', 'Éthologie'].freeze
 
-  LEVELS = ['Débutant', 'Galop 1-2', 'Galop 3-4', 'Galop 5-6', 'Galop 7+',
+  LEVEL = ['Débutant', 'Galop 1-2', 'Galop 3-4', 'Galop 5-6', 'Galop 7+',
             'Amateur', 'Pro', 'Compétition'].freeze
 
   # Méthodes pour gérer les arrays (PostgreSQL)
-  
+
 
   # Scopes utiles
   scope :verified, -> { where(verified: true) }
@@ -27,7 +27,6 @@ class Coach < ApplicationRecord
   scope :by_location, ->(location) { where("location ILIKE ?", "%#{location}%") }
   scope :by_speciality, ->(speciality) { where("? = ANY(specialities)", speciality) }
 
-  # Méthodes calculées
   def average_rating
     reviews.average(:rating).to_f.round(1)
   end

@@ -10,7 +10,7 @@ User.delete_all
 ActiveStorage::Attachment.all.each { |a| a.purge }
 puts "✅ Base nettoyée !\n\n"
 
-puts "Création des utilisateurs (cavaliers) et coachs)..."
+puts "Création des utilisateurs (cavaliers et coachs)..."
 
 coaches_data = [
   {
@@ -46,12 +46,13 @@ coaches_data = [
   {
     first_name: "Antoine", last_name: "Petit", email: "antoine.hunter@gmail.com",
     phone: "06 67 89 01 23", role: "coach", bio: "Hunter & Équitation de travail – Préparation equifun",
-    specialities: "Hunter, Équifun, TREC", level: "Pro", location: "Centre Équestre du Bois de Vincennes, 75012 Paris",
+    specialities: "Hunter, Equifun, TREC", level: "Pro", location: "Centre Équestre du Bois de Vincennes, 75012 Paris",
     price_per_session: 60, years_experience: 10, latitude: 48.831, longitude: 2.437
   }
 ]
 
 coaches = []
+
 coaches_data.each do |data|
   user = User.create!(
     email: data[:email],
@@ -79,6 +80,10 @@ coaches_data.each do |data|
   puts "✅ Coach créé : #{user.full_name}"
 end
 
+# ---------------------------
+# 🐴 Création des cavaliers
+# ---------------------------
+
 riders_data = [
   { first_name: "Léa", last_name: "Martin", email: "lea.martin@gmail.com", level: "Galop 6", city: "Lyon" },
   { first_name: "Lucas", last_name: "Durand", email: "lucas.durand@gmail.com", level: "Galop 7", city: "Bordeaux" },
@@ -91,7 +96,6 @@ riders_data = [
 ]
 
 riders = []
-horses_created = 0
 
 riders_data.each do |data|
   user = User.create!(
@@ -102,7 +106,7 @@ riders_data.each do |data|
     last_name: data[:last_name],
     phone: "06#{rand(10..99)} #{rand(10..99)} #{rand(10..99)} #{rand(10..99)}",
     role: "rider",
-    bio: "Cavali#{data[:level].include?('Pro') ? 'er compétiteur' : 'ère amateur'} – ' + data[:level]} – #{data[:city]}"
+    bio: "Cavalier niveau #{data[:level]} – #{data[:city]}"
   )
 
   riders << user
@@ -120,70 +124,83 @@ riders_data.each do |data|
       ].sample,
       discipline: ["CSO", "Dressage", "CCE", "Hunter", "Western", "Poney", "Loisir"].sample
     )
-    horses_created += 1
   end
-  puts "Rider créé : #{user.full_name} – #{user.horses.count} chevaux"
+
+  puts "Cavalier créé : #{user.full_name} – #{user.horses.count} chevaux"
 end
 
-puts "\nTotal : #{User.coach.count} coachs | #{User.rider.count} cavaliers | #{Horse.count} chevaux\n\n"
+puts "\nTotal : #{User.where(role: "coach").count} coachs | #{User.where(role: "rider").count} cavaliers | #{Horse.count} chevaux\n\n"
+
+# ---------------------------
+# 📅 Disponibilités coach
+# ---------------------------
 
 puts "Création des disponibilités des coachs..."
-days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+days = %w[monday tuesday wednesday thursday friday saturday sunday]
 
 coaches.each do |coach|
-  # 4 à 6 créneaux par coach
   rand(4..6).times do
-    day = days.sample
     start_h = rand(8..17)
     CoachAvailability.create!(
       coach: coach,
-      days_off: day,
+      days_off: days.sample,
       start_time: "#{start_h}:00",
-      end_time: "#{start_h + rand(3..6)}:00"
+      end_time: "#{start_h + rand(2..5)}:00"
     )
   end
 end
 
+# ---------------------------
+# 📘 Bookings
+# ---------------------------
 
 puts "Création de 20 réservations..."
+
 20.times do
+  start_at = Faker::Time.between(from: 30.days.ago, to: 20.days.from_now)
   Booking.create!(
     horse: Horse.all.sample,
     coach: coaches.sample,
     status: ["confirmed", "pending", "completed", "cancelled"].sample,
-    start_at: Faker::Time.between(from: 30.days.ago, to: 60.days.from_now, format: :default),
-    end_at: Faker::Time.forward(days: 60, period: :morning) + rand(3600..7200),
+    start_at: start_at,
+    end_at: start_at + rand(1..3).hours,
     total_price: [55, 60, 65, 75, 90, 110].sample
   )
 end
 
-puts "Création de 15 avis authentiques..."
-Booking.completed.each do |booking|
-  next if rand > 0.7 # 70% des cours ont un avis
+# ---------------------------
+# ⭐ Avis
+# ---------------------------
+
+puts "Création de 15 avis..."
+
+Booking.where(status: "completed").each do |booking|
+  next if rand > 0.7 # 30% seulement ont un avis
 
   Review.create!(
     user: booking.horse.user,
     booking: booking,
     rating: rand(3..5),
     comment: [
-      "Super cours ! Mon cheval a beaucoup progressé sur les courbes.",
-      "Coach très pédagogue, à l'écoute et très pro. Je recommande vivement !",
-      "Séance intensive mais très efficace. Objectifs atteints.",
-      "Caroline est incroyable avec les jeunes chevaux. Merci !",
-      "Parfait pour préparer une épreuve hunter. Super ambiance.",
-      "Julien a une approche très fine du dressage. Résultats visibles dès le premier cours.",
-      "Émilie m'a appris le sliding stop en 3 séances. Incroyable !"
+      "Super cours ! Mon cheval a beaucoup progressé.",
+      "Coach très pédagogue et à l'écoute.",
+      "Séance intense mais efficace.",
+      "Progression visible en quelques séances.",
+      "Très bonne préparation pour la compétition.",
+      "Excellente méthode de dressage.",
+      "Merci pour les conseils, séance top !"
     ].sample
   )
 end
 
-puts "\nSEED TERMINÉE avec succès !"
+puts "\nSEED TERMINÉE AVEC SUCCÈS !"
 puts "======================================"
 puts "Coaches       : #{Coach.count}"
-puts "Cavaliers     : #{User.rider.count}"
+puts "Cavaliers     : #{User.where(role: "rider").count}"
 puts "Chevaux       : #{Horse.count}"
 puts "Réservations  : #{Booking.count}"
-puts "Avis           : #{Review.count}"
+puts "Avis          : #{Review.count}"
 puts "======================================\n\n"
 
 puts "Connecte-toi avec :"

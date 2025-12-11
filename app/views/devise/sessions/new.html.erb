@@ -1,0 +1,140 @@
+<div class="auth-page" style="min-height: 100vh; background: #f8f5f2;">
+  <div class="container py-5">
+    <div class="row justify-content-center align-items-center">
+      <!-- Colonne gauche : texte / ambiance -->
+      <div class="col-lg-6 mb-4 mb-lg-0 d-none d-lg-block">
+        <div class="p-4">
+          <span class="badge rounded-pill px-3 py-2 mb-3" style="background:#e0e8ff; color:#26427d;">
+            🐎 M’equi · Espace cavalier & coach
+          </span>
+
+          <h1 class="mb-3" style="color:#5f3b2f; font-weight: 700;">
+            Connecte-toi pour réserver<br>tes prochaines séances en toute sérénité.
+          </h1>
+
+          <p class="lead text-muted mb-4">
+            Retrouve tes chevaux, tes coachs favoris, ton historique de séances et tes recommandations personnalisées.
+          </p>
+
+          <ul class="list-unstyled text-muted mb-4">
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Accès rapide aux coachs adaptés à ton niveau et à ta discipline
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Gestion de tes réservations en quelques clics
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Séances en présentiel ou visio, selon tes besoins
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-3 mt-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px;">
+                <i class="fas fa-horse-head" style="color:#5f3b2f;"></i>
+              </div>
+              <div>
+                <div class="small text-muted">Déjà</div>
+                <strong style="color:#5f3b2f;">des dizaines de cavaliers satisfaits</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne droite : carte de login -->
+      <div class="col-lg-5 col-md-8">
+        <div class="card-mequi shadow-mequi-lg rounded-4" style="border: none;">
+          <div class="card-body p-4 p-md-5">
+
+            <div class="text-center mb-4">
+              <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                   style="width:64px; height:64px; background:#f5efe9;">
+                <i class="fas fa-user-circle fa-2x" style="color:#5f3b2f;"></i>
+              </div>
+              <h2 class="h4 mb-1" style="color:#5f3b2f; font-weight: 600;">
+                Connexion à ton espace
+              </h2>
+              <p class="text-muted small mb-0">
+                Renseigne ton email et ton mot de passe pour accéder à ton compte.
+              </p>
+            </div>
+
+            <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+              <% if flash[:alert].present? %>
+                <div class="alert alert-danger small mb-3">
+                  <%= flash[:alert] %>
+                </div>
+              <% end %>
+
+              <% if flash[:notice].present? %>
+                <div class="alert alert-success small mb-3">
+                  <%= flash[:notice] %>
+                </div>
+              <% end %>
+
+              <div class="mb-3">
+                <label class="form-label" for="user_email">Adresse email</label>
+                <%= f.email_field :email,
+                                  autofocus: true,
+                                  autocomplete: "email",
+                                  class: "form-control",
+                                  placeholder: "prenom.nom@email.com" %>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label" for="user_password">Mot de passe</label>
+                  <% if devise_mapping.recoverable? %>
+                    <%= link_to "Mot de passe oublié ?", new_password_path(resource_name),
+                                class: "small text-muted text-decoration-none" %>
+                  <% end %>
+                </div>
+                <%= f.password_field :password,
+                                     autocomplete: "current-password",
+                                     class: "form-control",
+                                     placeholder: "••••••••" %>
+              </div>
+
+              <% if devise_mapping.rememberable? %>
+                <div class="mb-3 form-check">
+                  <%= f.check_box :remember_me, class: "form-check-input", id: "remember_me" %>
+                  <label class="form-check-label small text-muted" for="remember_me">
+                    Se souvenir de moi sur cet appareil
+                  </label>
+                </div>
+              <% end %>
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-mequi-primary"
+                        style="background:#5b3e25; border:none; border-radius:999px; padding:0.75rem 1rem; color:#FFFFFF">
+                  <i class="fas fa-sign-in-alt me-2"></i>
+                  Se connecter
+                </button>
+              </div>
+
+              <div class="text-center text-muted small">
+                Pas encore de compte ?
+                <%= link_to "Créer un compte", new_registration_path(resource_name),
+                            class: "text-decoration-none",
+                            style: "color:#7b93c9;" %>
+              </div>
+            <% end %>
+
+          </div>
+        </div>
+
+        <!-- Petit texte de réassurance -->
+        <div class="text-center mt-3">
+          <small class="text-muted">
+            <i class="fas fa-lock me-1"></i>
+            Connexion sécurisée · Tes données sont protégées par M’equi
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+<%= form_with url: coaches_path, method: :get, local: true, class: "navbar-search-form d-flex" do %>
+  <div class="input-group">
+    <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "Rechercher un coach..." %>
+    <%= submit_tag "Rechercher", class: "btn btn-brown" %>
+  </div>
+<% end %>

@@ -1,7 +1,9 @@
 class Coach < ApplicationRecord
+  include PgSearch::Model
+
   belongs_to :user
-  has_many :bookings
-  has_many :coach_availabilities
+  has_many :bookings, dependent: :destroy
+  has_many :coach_availabilities, dependent: :destroy
   has_many :reviews, through: :bookings
 
   validates :user_id, presence: true, uniqueness: true
@@ -23,11 +25,29 @@ class Coach < ApplicationRecord
     'Amateur', 'Pro', 'Compétition'
   ].freeze
 
-  scope :verified, -> { where(verified: true) }
-  scope :active, -> { where(active: true) }
-  scope :by_location, ->(location) { where("location ILIKE ?", "%#{location}%") }
-  scope :by_speciality, ->(speciality) { where("? = ANY(specialities)", speciality) }
+  pg_search_scope :search_by_text,
+    against: [:specialities, :location, :level],
+    associated_against: {
+      user: [:first_name, :last_name, :bio]
+    },
+    using: {
+      tsearch: { prefix: true, dictionary: "french" }
+    },
+    ignoring: :accents
 
+  scope :by_location, ->(location) { where("location ILIKE ?", "%#{location}%") }
+  scope :by_speciality, ->(speciality) { where("specialities ILIKE ?", "%#{speciality}%") }
+  scope :by_price_range, ->(min, max) {
+    scope = all
+    scope = scope.where("price_per_session >= ?", min) if min.present?
+    scope = scope.where("price_per_session <= ?", max) if max.present?
+    scope
+  }
+  scope :by_level, ->(level) { where(level: level) }
+  scope :by_experience, ->(min_years) { where("years_experience >= ?", min_years) }
+  scope :with_availability, -> {
+    joins(:coach_availabilities).distinct
+  }
 
   def average_rating
     reviews.average(:rating).to_f.round(1)
@@ -39,19 +59,19 @@ class Coach < ApplicationRecord
 
   def satisfaction_rate
     return 0 if reviews.empty?
-
     ((reviews.where("rating >= ?", 4).count.to_f / reviews.count) * 100).round
   end
 
   def total_students
-    bookings
-      .joins(:horse)
-      .select("DISTINCT horses.user_id")
-      .count
+    bookings.joins(:horse).select("DISTINCT horses.user_id").count
   end
 
   def full_name
     "#{user.first_name} #{user.last_name}"
+  end
+
+  def specialities_list
+    specialities.to_s.split(",").map(&:strip)
   end
 
   def availability_for_day(day_name)

@@ -1,0 +1,156 @@
+$brown-primary: #5b3e25;
+$brown-button: #7a5033;
+$beige-light: #f9f5f0;
+$blue-tag: #f3f6ff;
+
+.coach-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.coach-card-image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: $beige-light;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .coach-card:hover & img {
+    transform: scale(1.05);
+  }
+}
+
+.coach-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  background: linear-gradient(135deg, $beige-light 0%, #e8e0d8 100%);
+}
+
+.coach-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.coach-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.coach-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.coach-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  flex-shrink: 0;
+
+  .rating-star {
+    color: #f39c12;
+  }
+
+  .rating-value {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .rating-count {
+    color: #999;
+    font-size: 12px;
+  }
+}
+
+.coach-card-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 12px;
+
+  svg {
+    flex-shrink: 0;
+    color: #999;
+  }
+}
+
+.coach-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.coach-tag {
+  font-size: 11px;
+  background: $blue-tag;
+  border-radius: 20px;
+  padding: 4px 10px;
+  color: #5b6b8a;
+  font-weight: 500;
+}
+
+.coach-card-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+
+  svg {
+    color: #999;
+  }
+}
+
+.coach-card-footer {
+  margin-top: auto;
+}
+
+@media (max-width: 767px) {
+  .coach-card-image {
+    height: 160px;
+  }
+
+  .coach-card-body {
+    padding: 14px;
+  }
+}

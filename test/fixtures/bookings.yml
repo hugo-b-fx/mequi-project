@@ -1,17 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   horse: one
   coach: one
-  status: MyText
-  start_at: 1.5
-  end_at: 1.5
-  total_price: 1
+  status: "confirmed"
+  start_at: <%= 1.day.from_now %>
+  end_at: <%= 1.day.from_now + 1.hour %>
+  total_price: 75
 
 two:
   horse: two
   coach: two
-  status: MyText
-  start_at: 1.5
-  end_at: 1.5
-  total_price: 1
+  status: "pending"
+  start_at: <%= 2.days.from_now %>
+  end_at: <%= 2.days.from_now + 2.hours %>
+  total_price: 100

@@ -1,21 +1,19 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   user: one
-  specialities: MyText
-  level: MyString
-  location: MyString
-  price_per_session: 1
-  years_experience: 1
-  latitude: 1.5
-  longitude: 1.5
+  specialities: "CSO, Dressage"
+  level: "Pro"
+  location: "Paris, France"
+  price_per_session: 75
+  years_experience: 10
+  latitude: 48.8566
+  longitude: 2.3522
 
 two:
   user: two
-  specialities: MyText
-  level: MyString
-  location: MyString
-  price_per_session: 1
-  years_experience: 1
-  latitude: 1.5
-  longitude: 1.5
+  specialities: "CCE, Endurance"
+  level: "Amateur"
+  location: "Lyon, France"
+  price_per_session: 50
+  years_experience: 5
+  latitude: 45.7640
+  longitude: 4.8357

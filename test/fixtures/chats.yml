@@ -1,11 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   user: one
-  coach: one
+  coach_id: <%= ActiveRecord::FixtureSet.identify(:two) %>
   is_ai_chat: false
 
 two:
   user: two
-  coach: two
+  coach_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
   is_ai_chat: false

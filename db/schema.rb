@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_10_141043) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_11_104342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "unaccent"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -86,6 +87,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_141043) do
     t.float "longitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["location"], name: "index_coaches_on_location"
+    t.index ["price_per_session"], name: "index_coaches_on_price_per_session"
+    t.index ["specialities"], name: "index_coaches_on_specialities"
     t.index ["user_id"], name: "index_coaches_on_user_id"
   end
 
@@ -136,6 +140,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_10_141043) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["first_name"], name: "index_users_on_first_name"
+    t.index ["last_name"], name: "index_users_on_last_name"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

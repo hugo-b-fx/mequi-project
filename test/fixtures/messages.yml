@@ -1,13 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   chat: one
-  sender: one
-  content: MyText
-  role: MyString
+  user: one
+  content: "Bonjour, je suis intéressé par vos cours"
+  role: "user"
 
 two:
   chat: two
-  sender: two
-  content: MyText
-  role: MyString
+  user: two
+  content: "Merci pour votre message"
+  role: "user"

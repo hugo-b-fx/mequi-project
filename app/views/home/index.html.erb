@@ -2,7 +2,6 @@
 
 <div class="home-page">
 
-  <!-- HERO -->
   <div class="home-hero">
     <div class="container py-5">
       <div class="row align-items-center">
@@ -14,7 +13,7 @@
             coachs
           </h1>
 
-          <%= link_to "Trouver votre coach", login_selector_path, class: "btn btn-brown btn-lg mt-4" %>
+          <%= link_to "Trouver votre coach", coaches_path, class: "btn btn-brown btn-lg mt-4" %>
         </div>
 
         <div class="col-md-6 d-flex gap-3 justify-content-end hero-discipline-col">
@@ -33,13 +32,12 @@
     </div>
   </div>
 
-  <!-- SEARCH BAR -->
   <div class="search-wrapper container">
-    <%= form_with url: search_path, method: :post, local: true, class: "search-bar d-flex align-items-center" do |f| %>
+    <%= form_with url: coaches_path, method: :get, local: true, class: "search-bar d-flex align-items-center" do |f| %>
 
       <div class="search-field d-flex align-items-center flex-grow-1">
         <span class="search-icon">🔍</span>
-        <%= f.text_field :discipline, placeholder: "Discipline (CSO, Dressage...)", class: "form-control border-0" %>
+        <%= f.text_field :query, placeholder: "Discipline, nom de coach...", class: "form-control border-0" %>
       </div>
 
       <div class="search-field d-flex align-items-center flex-grow-1">
@@ -52,41 +50,37 @@
     <% end %>
   </div>
 
-  <!-- STATS -->
   <div class="container text-center stats-section">
     <div class="row pt-5 pb-3">
       <div class="col-md-4">
-        <h2 class="stat-number">120</h2>
+        <h2 class="stat-number"><%= Coach.count %></h2>
         <p class="stat-label">Coachs certifiés</p>
       </div>
 
       <div class="col-md-4">
-        <h2 class="stat-number">300</h2>
+        <h2 class="stat-number"><%= Review.count %></h2>
         <p class="stat-label">Avis récoltés</p>
       </div>
 
       <div class="col-md-4">
-        <h2 class="stat-number">10</h2>
+        <h2 class="stat-number"><%= Coach::SPECIALITIES.count %></h2>
         <p class="stat-label">Disciplines</p>
       </div>
     </div>
   </div>
 
-  <!-- DÉCOUVREZ NOS COACHS -->
   <section class="discover-coaches-section">
     <div class="container text-center py-5">
       <h2 class="section-title mb-4">Découvrez nos coachs</h2>
 
       <div class="discipline-pills d-flex flex-wrap justify-content-center gap-3">
-        <button class="discipline-pill">Coach de dressage</button>
-        <button class="discipline-pill">Coach de CCE</button>
-        <button class="discipline-pill">Coach de CSO</button>
-        <button class="discipline-pill">Coach d’éthologie</button>
+        <% Coach::SPECIALITIES.first(4).each do |speciality| %>
+          <%= link_to "Coach de #{speciality}", coaches_path(speciality: speciality), class: "discipline-pill" %>
+        <% end %>
       </div>
     </div>
   </section>
 
-  <!-- COACHING ADAPTÉ -->
   <section class="coaching-banner">
     <div class="container text-center py-4">
       <h2 class="section-title mb-0">
@@ -95,7 +89,6 @@
     </div>
   </section>
 
-  <!-- COMMENT ÇA MARCHE -->
   <section class="how-it-works-section">
     <div class="container text-center py-5">
       <h2 class="section-title">Comment ça marche ?</h2>
@@ -129,7 +122,6 @@
     </div>
   </section>
 
-  <!-- LES COACHS STARS -->
   <section class="top-coaches-section">
     <div class="container py-5">
 
@@ -141,52 +133,25 @@
       <div class="row g-4">
         <% @coaches.each do |coach| %>
           <div class="col-md-4">
-            <div class="coach-card">
-
-              <% if coach.user.photo.attached? %>
-                <%= image_tag coach.user.photo, class: "coach-img", alt: coach.user.full_name %>
-              <% else %>
-                <img src="https://placehold.co/600x400?text=Coach" class="coach-img" alt="Coach">
-              <% end %>
-
-              <div class="coach-body">
-
-                <div class="coach-header">
-                  <h3 class="coach-name"><%= coach.user.full_name %></h3>
-                  <div class="coach-rating">★ <%= coach.average_rating || 4.9 %></div>
-                </div>
-
-                <p class="coach-location"><%= coach.location %></p>
-
-                <div class="coach-tags">
-                  <% coach.specialities.split(",").first(3).each do |tag| %>
-                    <span class="coach-tag"><%= tag.strip %></span>
-                  <% end %>
-                </div>
-
-                <div class="coach-footer">
-                  <div class="coach-price"><%= coach.price_per_session %>€/séance</div>
-
-                  <%= link_to "Voir profil", coach_path(coach), class: "btn btn-brown btn-sm" %>
-                </div>
-              </div>
-
-            </div>
+            <%= render "coaches/coach_card", coach: coach %>
           </div>
         <% end %>
+      </div>
+
+      <div class="text-center mt-4">
+        <%= link_to "Voir tous les coachs", coaches_path, class: "btn btn-brown btn-lg" %>
       </div>
 
     </div>
   </section>
 
-  <!-- DEVENEZ COACH -->
   <section class="become-coach-section">
     <div class="container text-center py-5">
 
       <h2 class="section-title">Devenez coach M'equi</h2>
 
       <p class="section-subtitle">
-        Transmettez votre savoir au-delà de vos écuries grâce à l’accompagnement hybride.
+        Transmettez votre savoir au-delà de vos écuries grâce à l'accompagnement hybride.
       </p>
 
       <div class="row mt-4">
@@ -216,7 +181,7 @@
         Rejoignez la plus grande communauté de cavaliers motivés.
       </p>
 
-      <a href="#" class="btn btn-brown">Devenir coach</a>
+      <%= link_to "Devenir coach", new_coach_path, class: "btn btn-brown" %>
 
     </div>
   </section>

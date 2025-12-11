@@ -280,18 +280,18 @@
                   <% end %>
                 </div>
 
-                <div class="mb-3">
-                  <label class="form-label">Début de séance</label>
-                  <%= datetime_field_tag "booking[start_at]", nil,
-                                         class: "form-control",
-                                         required: true %>
-                </div>
+                <!-- Champs hidden remplis par les créneaux -->
+                <%= hidden_field_tag "booking[start_at]", nil, id: "booking_start_at" %>
+                <%= hidden_field_tag "booking[end_at]", nil, id: "booking_end_at" %>
 
                 <div class="mb-3">
-                  <label class="form-label">Fin de séance</label>
-                  <%= datetime_field_tag "booking[end_at]", nil,
-                                         class: "form-control",
-                                         required: true %>
+                  <label class="form-label">Créneau sélectionné</label>
+                  <div id="selected-slot-label" class="form-control bg-light">
+                    Aucun créneau sélectionné pour le moment.
+                  </div>
+                  <small class="text-muted">
+                    Clique sur un créneau disponible dans la liste ci-dessous pour le sélectionner.
+                  </small>
                 </div>
 
                 <%= submit_tag "📞 Réserver ce créneau", class: "btn-mequi-primary btn w-100" %>
@@ -311,23 +311,61 @@
           </div>
         </div>
 
-        <!-- Disponibilités -->
+        <!-- Créneaux disponibles (Doctolib-like) -->
         <div class="card-mequi mb-4">
           <div class="card-body">
             <h6 class="form-section-title mb-3">
               <i class="fas fa-calendar-alt me-2"></i>
-              Disponibilités
+              Créneaux disponibles (7 jours)
             </h6>
 
-            <% if @availabilities.any? %>
-              <% @availabilities.each do |availability| %>
-                <div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded-3"
-                     style="background:#f8f5f2;">
-                  <strong class="text-capitalize"><%= availability.days_off %></strong>
-                  <span class="availability-badge px-3 py-1 rounded-pill"
-                        style="background:#e0e8ff; color:#26427d; font-size:0.85rem;">
-                    <%= availability.start_time.strftime("%Hh%M") %> – <%= availability.end_time.strftime("%Hh%M") %>
-                  </span>
+            <% availability = @coach.coach_availabilities.first %>
+
+            <% if availability.present? %>
+              <% booked_slots = @coach.bookings.where(
+                    "start_at >= ? AND start_at <= ?",
+                    Date.today.beginning_of_day,
+                    7.days.from_now.end_of_day
+                  ).pluck(:start_at, :end_at) %>
+
+              <% 7.times do |i| %>
+                <% day = Date.today + i.days %>
+                <% weekday = day.strftime("%A").downcase %>
+                <% next if availability.days_off.to_s.downcase == weekday %>
+
+                <% day_start = Time.zone.parse("#{day} #{availability.start_time.strftime("%H:%M")}") %>
+                <% day_end   = Time.zone.parse("#{day} #{availability.end_time.strftime("%H:%M")}") %>
+
+                <h6 class="mt-3 mb-2" style="color:#5f3b2f;">
+                  <%= day.strftime("%A %d %B") %>
+                </h6>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <% current_slot = day_start %>
+                  <% while current_slot < day_end %>
+                    <% slot_end = current_slot + 1.hour %>
+
+                    <% overlapping = booked_slots.any? do |b_start, b_end|
+                      (current_slot < b_end) && (slot_end > b_start)
+                    end %>
+
+                    <% if overlapping %>
+                      <button type="button"
+                              class="btn btn-sm btn-outline-secondary disabled"
+                              style="opacity:0.5; pointer-events:none;">
+                        <%= current_slot.strftime("%Hh%M") %>
+                      </button>
+                    <% else %>
+                      <% label = "#{day.strftime("%A %d %B")} · #{current_slot.strftime("%Hh%M")}–#{slot_end.strftime("%Hh%M")}" %>
+                      <button type="button"
+                              class="btn btn-sm btn-brown"
+                              onclick="selectSlot('<%= current_slot.iso8601 %>', '<%= slot_end.iso8601 %>', '<%= j label %>')">
+                        <%= current_slot.strftime("%Hh%M") %>
+                      </button>
+                    <% end %>
+
+                    <% current_slot += 1.hour %>
+                  <% end %>
                 </div>
               <% end %>
             <% else %>
@@ -355,3 +393,22 @@
   </div>
 
 </div>
+
+<script>
+  function selectSlot(startAtISO, endAtISO, label) {
+    const startField = document.getElementById("booking_start_at");
+    const endField   = document.getElementById("booking_end_at");
+    const labelDiv   = document.getElementById("selected-slot-label");
+
+    if (!startField || !endField || !labelDiv) return;
+
+    startField.value = startAtISO;
+    endField.value   = endAtISO;
+    labelDiv.textContent = label;
+
+    const bookingCard = document.getElementById("booking-card");
+    if (bookingCard) {
+      bookingCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+</script>

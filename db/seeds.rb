@@ -17,37 +17,38 @@ coaches_data = [
     first_name: "Caroline", last_name: "Dubois", email: "caroline.coach@gmail.com",
     phone: "06 12 34 34 56 78", role: "coach", bio: "Monitrice BEES 2 & DEJEPS – Spécialiste CSO & CCE",
     specialities: "Saut d'obstacles, Cross, Hunter", level: "Pro", location: "Haras de Jardy, 92430 Marnes-la-Coquette",
-    price_per_session: 75, years_experience: 18, latitude: 48.837, longitude: 2.162
+    price_per_session: 75, years_experience: 18, latitude: 48.837, longitude: 2.162, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467334/coach4_720_tpvfeu.jpg"
   },
   {
     first_name: "Julien", last_name: "Moreau", email: "julien.dressage@gmail.com",
     phone: "06 23 45 67 89", role: "coach", bio: "Champion de France Pro 1 Dressage – Formateur GP",
     specialities: "Dressage, Reprise libre en musique", level: "Pro", location: "Écuries de la Reine, 78000 Versailles",
-    price_per_session: 90, years_experience: 22, latitude: 48.804, longitude: 2.120
+    price_per_session: 90, years_experience: 22, latitude: 48.804, longitude: 2.120, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467338/coachs1_720_awgmrg.jpg
+"
   },
   {
     first_name: "Émilie", last_name: "Rousseau", email: "emilie.western@gmail.com",
     phone: "06 34 56 78 90", role: "coach", bio: "Instructrice AQHA & Western – Barrel Racing & Reining",
     specialities: "Western, Reining, Barrel Racing", level: "Pro", location: "Ranch des Étoiles, 13790 Rousset",
-    price_per_session: 65, years_experience: 12, latitude: 43.485, longitude: 5.622
+    price_per_session: 65, years_experience: 12, latitude: 43.485, longitude: 5.622, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467346/coachs2_720_tgfiwd.jpg"
   },
   {
     first_name: "Thomas", last_name: "Leroy", email: "thomas.eventing@gmail.com",
     phone: "06 45 67 89 01", role: "coach", bio: "Cavalier international CCE – CCI4*",
     specialities: "Concours Complet, Cross indoor", level: "Pro", location: "Pôle Équestre de Deauville, 14800",
-    price_per_session: 110, years_experience: 20, latitude: 49.360, longitude: 0.075
+    price_per_session: 110, years_experience: 20, latitude: 49.360, longitude: 0.075, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467354/coachs3_720_opdq8h.jpg"
   },
   {
     first_name: "Claire", last_name: "Bernard", email: "claire.pony@gmail.com",
     phone: "06 56 78 90 12", role: "coach", bio: "Spécialiste Poneys & Enfants – Galop 7",
     specialities: "Poney, Enseignement enfants, Baby-poney", level: "Pro", location: "Poney Club de Chantilly, 60500",
-    price_per_session: 55, years_experience: 15, latitude: 49.185, longitude: 2.460
+    price_per_session: 55, years_experience: 15, latitude: 49.185, longitude: 2.460, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467358/coachs6_720_pieayf.jpg"
   },
   {
     first_name: "Antoine", last_name: "Petit", email: "antoine.hunter@gmail.com",
     phone: "06 67 89 01 23", role: "coach", bio: "Hunter & Équitation de travail – Préparation equifun",
     specialities: "Hunter, Equifun, TREC", level: "Pro", location: "Centre Équestre du Bois de Vincennes, 75012 Paris",
-    price_per_session: 60, years_experience: 10, latitude: 48.831, longitude: 2.437
+    price_per_session: 60, years_experience: 10, latitude: 48.831, longitude: 2.437, photo_url: "https://res.cloudinary.com/dqdjmhdgi/image/upload/v1765467366/coachs5_720_b2arbu.jpg"
   }
 ]
 

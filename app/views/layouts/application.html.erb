@@ -12,5 +12,33 @@
 
   <body>
     <%= yield %>
+
+    <% if flash[:notice] %>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          Swal.fire({
+            title: "Réservation confirmée 🎉",
+            text: "<%= j flash[:notice] %>",
+            icon: "success",
+            confirmButtonText: "Parfait",
+            confirmButtonColor: "#5f3b2f"
+          });
+        });
+      </script>
+    <% end %>
+
+    <% if flash[:alert] %>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          Swal.fire({
+            title: "Erreur",
+            text: "<%= j flash[:alert] %>",
+            icon: "error",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#8b5c42"
+          });
+        });
+      </script>
+    <% end %>
   </body>
 </html>

@@ -260,7 +260,7 @@
             </div>
 
             <% if user_signed_in? %>
-              <%= form_with url: bookings_path, method: :post do %>
+              <%= form_with url: bookings_path, method: :post, data: { turbo: false } do %>
                 <%= hidden_field_tag :coach_id, @coach.id %>
 
                 <div class="mb-3">

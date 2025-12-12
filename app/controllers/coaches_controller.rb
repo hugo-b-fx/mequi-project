@@ -10,6 +10,8 @@ class CoachesController < ApplicationController
   end
 
   def show
+    @date = params[:date] ? Date.parse(params[:date]) : Date.today
+    @slots = @coach.available_slots(@date)
     @reviews = @coach.reviews.includes(:user).order(created_at: :desc).limit(2)
     @all_reviews_count = @coach.reviews.count
     @horses = @coach.user.horses

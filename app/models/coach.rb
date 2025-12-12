@@ -81,4 +81,38 @@ class Coach < ApplicationRecord
   def available_days
     coach_availabilities.flat_map(&:days_off).uniq
   end
+
+  def available_slots(date)
+  # 1. Trouver la disponibilité correspondant au jour
+    weekday = date.strftime("%A").downcase
+    availability = coach_availabilities.find_by(days_off: weekday)
+
+    return [] unless availability
+
+    # 2. Générer tous les créneaux horaires d’une durée fixe (1h ici)
+    slots = []
+    start_time = availability.start_time
+    end_time   = availability.end_time
+
+  # On convertit pour coller la date sélectionnée
+    start_dt = DateTime.new(date.year, date.month, date.day, start_time.hour, start_time.min)
+    end_dt   = DateTime.new(date.year, date.month, date.day, end_time.hour, end_time.min)
+
+    current = start_dt
+
+    while current < end_dt
+      slot_end = current + 1.hour
+      slots << { start_at: current, end_at: slot_end }
+      current = slot_end
+    end
+
+  # 3. Filtrer les créneaux déjà pris
+    booked = bookings.where("DATE(start_at) = ?", date)
+
+    slots.reject do |slot|
+      booked.any? do |b|
+        slot[:start_at] < b.end_at && slot[:end_at] > b.start_at
+      end
+    end
+  end
 end

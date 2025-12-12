@@ -111,7 +111,6 @@ riders_data.each do |data|
 
   riders << user
 
-  # Chaque cavalier a entre 4 et 8 chevaux
   rand(4..8).times do
     Horse.create!(
       user: user,
@@ -173,25 +172,104 @@ end
 # ⭐ Avis
 # ---------------------------
 
-puts "Création de 15 avis..."
+puts "Création des avis..."
 
-Booking.where(status: "completed").each do |booking|
-  next if rand > 0.7 # 30% seulement ont un avis
+comments_by_coach = {
+  "Caroline" => [
+    "Séance très structurée, j’ai gagné en trajectoires et en contrôle sur les barres.",
+    "Excellente préparation sur les contrats de foulées, conseils précis et applicables.",
+    "Très bon œil sur le couple, on a corrigé des détails qui changeaient tout.",
+    "Cours dynamique, grosse progression sur les abords et la qualité du galop.",
+    "Coach exigeante mais juste, super feeling et plan de travail clair.",
+    "Très bonne mise en confiance sur les combinaisons, j’ai senti une vraie différence.",
+    "Parfait pour préparer un parcours, réglages fins et très pédagogiques.",
+    "On a travaillé le cross en sécurité, super méthode et beaucoup de sérénité."
+  ],
+  "Julien" => [
+    "Très bonne séance de dressage, j’ai enfin compris mes erreurs de mise en main.",
+    "Coach très pédagogue, travail fin sur l’équilibre et la rectitude.",
+    "Progression visible dès la première séance, explications très claires.",
+    "Super conseils sur les transitions et l’impulsion, cheval beaucoup plus disponible.",
+    "Approche précise et bienveillante, gros travail sur le contact et la décontraction.",
+    "Très bon coaching pour préparer une reprise, points clés et routine d’échauffement.",
+    "Séance intense mais ultra efficace, on a gagné en cadence et en stabilité.",
+    "Excellent sur le travail latéral, j’ai senti mon cheval se tendre dans le bon sens."
+  ],
+  "Émilie" => [
+    "Cours top, méthode claire et efficace, j’ai mieux compris le reining.",
+    "Super séance de western, beaucoup de précision sans pression inutile.",
+    "Très bonne pédagogie, on a travaillé la finesse des aides et la réactivité.",
+    "Conseils excellents sur le pattern, progrès net sur les arrêts et les départs.",
+    "Coach à l’écoute, séance adaptée à mon niveau, très motivant.",
+    "Super sur le barrel, meilleure trajectoire et gestion de vitesse plus propre.",
+    "Très bon travail sur la stabilité et la position, gros gain de contrôle.",
+    "Approche pro et accessible, j’ai adoré la séance et je reviens vite."
+  ],
+  "Thomas" => [
+    "Très bon coaching CCE, travail complet et efficace, très rassurant.",
+    "Séance de cross très sécurisée, conseils concrets sur le rythme et les abords.",
+    "Coach ultra précis, on a vraiment amélioré la qualité du galop et des sauts.",
+    "Super séance, on a progressé sur les combinaisons et la décision à l’obstacle.",
+    "Très bon accompagnement, méthode claire et gros focus sur la confiance.",
+    "Prépa concours au top, gestion du parcours et stratégie très pertinentes.",
+    "Excellent cours, correction fine de ma position, cheval plus franc et régulier.",
+    "Très bonne séance, j’ai gagné en fluidité et en efficacité sur le cross."
+  ],
+  "Claire" => [
+    "Super coach avec les enfants, très patiente et rassurante, ma fille a adoré.",
+    "Séance ludique et efficace, beaucoup de progrès sur l’équilibre et la direction.",
+    "Très bon cours poney, exercices adaptés et ambiance super positive.",
+    "Coach très bienveillante, mon enfant a pris confiance rapidement.",
+    "Très bonne pédagogie, explications simples et motivantes pour les plus jeunes.",
+    "Séance nickel, beaucoup de jeux utiles et une vraie progression.",
+    "Top pour le baby-poney, cadre sécurisant et activités variées.",
+    "Excellente approche, mon enfant veut déjà reprendre un cours !"
+  ],
+  "Antoine" => [
+    "Très bonne séance de hunter, amélioration nette des courbes et de la précision.",
+    "Super coach, exercices progressifs et très formateurs, ambiance agréable.",
+    "Séance efficace, on a gagné en régularité et en qualité de galop.",
+    "Très bon travail sur les contrats et la rectitude, conseils simples et justes.",
+    "Coach pédagogue, bon œil, et exercices variés, je recommande.",
+    "Très bonne séance equifun, super pour la confiance et la précision.",
+    "Cours top, on a travaillé la technique sans se crisper, gros progrès.",
+    "Séance très complète, j’ai une vraie base de travail pour continuer seul."
+  ]
+}
 
-  Review.create!(
-    user: booking.horse.user,
-    booking: booking,
-    rating: rand(3..5),
-    comment: [
-      "Super cours ! Mon cheval a beaucoup progressé.",
-      "Coach très pédagogue et à l'écoute.",
-      "Séance intense mais efficace.",
-      "Progression visible en quelques séances.",
-      "Très bonne préparation pour la compétition.",
-      "Excellente méthode de dressage.",
-      "Merci pour les conseils, séance top !"
-    ].sample
-  )
+coaches.each do |coach|
+  coach_name = coach.user.first_name
+  comments_pool = comments_by_coach[coach_name] || [
+    "Super cours, conseils clairs et efficaces.",
+    "Coach très pédagogue et à l'écoute.",
+    "Séance intense mais très productive.",
+    "Progression visible rapidement, je recommande.",
+    "Très bonne préparation et excellent suivi."
+  ]
+
+  target_reviews = rand(5..8)
+
+  target_reviews.times do
+    rider = riders.sample
+    horse = rider.horses.sample
+    start_at = Faker::Time.between(from: 25.days.ago, to: 2.days.ago)
+
+    booking = Booking.create!(
+      horse: horse,
+      coach: coach,
+      status: "completed",
+      start_at: start_at,
+      end_at: start_at + rand(1..3).hours,
+      total_price: coach.price_per_session
+    )
+
+    Review.create!(
+      user: booking.horse.user,
+      booking: booking,
+      rating: [3, 4, 4, 5, 5].sample,
+      comment: comments_pool.sample
+    )
+  end
 end
 
 puts "\nSEED TERMINÉE AVEC SUCCÈS !"

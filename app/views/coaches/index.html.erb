@@ -4,20 +4,26 @@
   <div class="search-hero">
     <div class="container">
       <h1 class="search-hero-title">Trouvez votre coach</h1>
-      <p class="search-hero-subtitle">Parcourez des centaines de profils de coachs qualifiés</p>
+      <p class="search-hero-subtitle">
+        Parcourez des centaines de profils de coachs qualifiés
+      </p>
     </div>
   </div>
 
   <div class="container py-4">
     <div class="row">
+      <!-- FILTRES -->
       <div class="col-lg-3 mb-4">
         <%= render "coaches/search_filters" %>
       </div>
 
+      <!-- RÉSULTATS -->
       <div class="col-lg-9">
         <div class="search-results-header d-flex justify-content-between align-items-center mb-4">
           <div class="results-count">
-            <strong><%= @coaches.total_count %></strong> coach<%= @coaches.total_count > 1 ? "s" : "" %> trouvé<%= @coaches.total_count > 1 ? "s" : "" %>
+            <strong><%= @coaches.total_count %></strong>
+            coach<%= @coaches.total_count > 1 ? "s" : "" %>
+            trouvé<%= @coaches.total_count > 1 ? "s" : "" %>
           </div>
         </div>
 
@@ -38,6 +44,7 @@
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
               </svg>
             </div>
+
             <h3>Aucun coach trouvé</h3>
             <p>Essayez de modifier vos critères de recherche</p>
             <%= link_to "Effacer les filtres", coaches_path, class: "btn btn-outline-brown" %>
@@ -45,5 +52,42 @@
         <% end %>
       </div>
     </div>
+  </div>
+</div>
+
+<div data-controller="ai-chat">
+  <!-- Bouton flottant -->
+  <button
+    type="button"
+    class="ai-chat-button"
+    data-action="click->ai-chat#toggle"
+    aria-label="Assistant IA">
+    🤖
+  </button>
+
+  <!-- Fenêtre chat -->
+  <div class="ai-chat-box d-none" data-ai-chat-target="box">
+    <div class="ai-chat-header">
+      Assistant M’equi
+    </div>
+
+    <div
+      id="messages"
+      class="ai-chat-messages"
+      data-ai-chat-target="messages">
+      <div class="text-muted small mb-2">
+        👋 Bonjour !<br>
+        Décris-moi le coach que tu recherches (discipline, ville, niveau…)
+      </div>
+    </div>
+
+    <form data-action="submit->ai-chat#send">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Ex : coach dressage à Versailles"
+        data-ai-chat-target="input"
+        required>
+    </form>
   </div>
 </div>

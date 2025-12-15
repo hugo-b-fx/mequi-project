@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.1].define(version: 2025_12_15_102632) do
+=======
+ActiveRecord::Schema[7.1].define(version: 2025_12_15_120857) do
+>>>>>>> aichat
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -58,7 +62,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_15_102632) do
 
   create_table "chats", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "coach_id", null: false
+    t.bigint "coach_id"
     t.boolean "is_ai_chat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

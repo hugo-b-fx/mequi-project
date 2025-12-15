@@ -34,4 +34,7 @@ Rails.application.routes.draw do
       delete :remove_photo # Pour supprimer une photo spécifique
     end
   end
+
+  resources :messages, only: [:create]
+  resource :chat, only: [:show]
 end

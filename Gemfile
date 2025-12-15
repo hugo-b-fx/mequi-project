@@ -41,6 +41,8 @@ gem "faker"
 gem "pg_search"
 gem "kaminari"
 
+gem "ruby_llm"
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

@@ -1,0 +1,8 @@
+<div class="mb-2 <%= message.role == "assistant" ? "" : "text-end" %>">
+  <strong>
+    <%= message.role == "assistant" ? "Assistant M’equi 🤖" : "Vous" %>
+  </strong>
+  <div class="mt-1">
+    <%= simple_format(message.content) %>
+  </div>
+</div>

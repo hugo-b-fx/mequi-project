@@ -1,0 +1,14 @@
+<% if coaches.any? %>
+  <% coaches.each do |coach| %>
+    <div class="ai-coach-result mb-3 p-2 rounded-3" style="background:#f8f5f2;">
+      <strong><%= coach.user.full_name %></strong><br>
+      <small class="text-muted">
+        <%= coach.specialities %> • <%= coach.location %>
+      </small><br>
+      <%= link_to "Voir le profil", coach_path(coach),
+                  class: "btn btn-sm btn-outline-primary mt-1" %>
+    </div>
+  <% end %>
+<% else %>
+  <em>Aucun coach ne correspond à ta recherche.</em>
+<% end %>

@@ -1,0 +1,10 @@
+<%= turbo_stream.append "messages" do %>
+  <%= render @message %>
+
+  <% if @matched_coaches.present? %>
+    <div class="mt-2">
+      <%= render partial: "messages/message",
+                 locals: { coaches: @matched_coaches } %>
+    </div>
+  <% end %>
+<% end %>

@@ -17,7 +17,6 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 // ================================
 .rider-header {
   background: linear-gradient(120deg, $brown-primary 0%, #8b5c42 40%, #7b93c9 100%);
-  padding-top: 56px; // navbar offset
 }
 
 .rider-header-content {
@@ -889,9 +888,6 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 768px) {
-  .rider-header {
-    padding-top: 52px;
-  }
 
   .rider-header-content {
     flex-wrap: wrap;
@@ -1007,9 +1003,6 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 480px) {
-  .rider-header {
-    padding-top: 48px;
-  }
 
   .rider-header-content {
     padding: 12px 0;
@@ -1460,7 +1453,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 // ================================
 .profile-header {
   background: linear-gradient(120deg, $brown-primary 0%, #8b5c42 40%, #7b93c9 100%);
-  padding: 80px 0 32px;
+  padding: 0 0 24px;
 }
 
 .profile-header-content {
@@ -1996,7 +1989,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 
 @media (max-width: 768px) {
   .profile-header {
-    padding: 70px 0 24px;
+    padding: 0 0 20px;
   }
 
   .profile-header-content {

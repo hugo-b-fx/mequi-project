@@ -96,7 +96,7 @@ def attach_photo_from_url(record, attribute, url)
   begin
     file = URI.open(url, read_timeout: 10)
     filename = "#{SecureRandom.hex(8)}.jpg"
-    record.send(attribute).attach(io: file, filename: filename, content_type: 'image/jpeg')
+    record.photo.attach(io: file, filename: filename, content_type: 'image/jpeg')
     true
   rescue => e
     puts "⚠️  Photo non attachée: #{e.message[0..40]}"
@@ -245,7 +245,7 @@ coaches_data.each do |data|
 
   # Photo selon genre
   avatar_url = data[:gender] == :male ? get_male_avatar : get_female_avatar
-  attach_photo_from_url(user, :photo, avatar_url)
+  attach_photo_from_url(user, avatar_url)
 
   coach = Coach.create!(
     user: user,
@@ -297,7 +297,7 @@ riders_data.each do |data|
 
   # Photo selon genre
   avatar_url = data[:gender] == :male ? get_male_avatar : get_female_avatar
-  attach_photo_from_url(user, :photo, avatar_url)
+  attach_photo_from_url(user, avatar_url)
 
   riders << user
   puts "✅ Cavalier créé : #{user.full_name} (#{data[:gender] == :male ? '♂' : '♀'})"
@@ -340,7 +340,7 @@ horses_data.each do |data|
   )
 
   # Photo cheval
-  attach_photo_from_url(horse, :photos, get_horse_photo)
+  attach_photo_from_url(horse, get_horse_photo)
 
   horses << horse
   puts "🐴 #{horse.name} (#{horse.breed}) → #{owner.full_name}"

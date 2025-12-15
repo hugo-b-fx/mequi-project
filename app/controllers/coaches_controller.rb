@@ -68,14 +68,14 @@ class CoachesController < ApplicationController
   end
 
   def coach_params
-    params.require(:coach).permit(
+    permitted = params.require(:coach).permit(
       :price_per_session,
       :years_experience,
       :location,
       :latitude,
       :longitude,
       :level,
-      :specialities,
+      specialities: [],
       coach_availabilities_attributes: [
         :id,
         :start_time,
@@ -84,5 +84,7 @@ class CoachesController < ApplicationController
         :days_off
       ]
     )
+    permitted[:specialities] = permitted[:specialities].join(", ") if permitted[:specialities].is_a?(Array)
+    permitted
   end
 end

@@ -1,0 +1,129 @@
+<%= render "shared/public_navbar" %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="text-center mb-5">
+        <%= link_to root_path, class: "text-decoration-none text-muted d-inline-block mb-3" do %>
+          <i class="fas fa-arrow-left"></i> Retour
+        <% end %>
+        <h1 class="mb-2" style="color: #5b3e25;">Devenez coach M'equi</h1>
+        <p class="text-muted">Renseignez vos informations pour rejoindre notre réseau de coachs</p>
+      </div>
+
+      <%= form_with model: @coach, local: true do |f| %>
+
+        <% if @coach.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @coach.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="mb-3" style="color: #5b3e25;"><i class="fas fa-user me-2"></i>Informations personnelles</h5>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Prénom</label>
+                <input type="text" class="form-control" value="<%= current_user.first_name %>" disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-control" value="<%= current_user.last_name %>" disabled>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" value="<%= current_user.email %>" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="mb-3" style="color: #5b3e25;"><i class="fas fa-briefcase me-2"></i>Informations professionnelles</h5>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= f.label :years_experience, "Années d'expérience *", class: "form-label" %>
+                <%= f.number_field :years_experience, class: "form-control", min: 0, placeholder: "Ex: 10" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :price_per_session, "Tarif par séance (€) *", class: "form-label" %>
+                <%= f.number_field :price_per_session, class: "form-control", min: 0, placeholder: "Ex: 50" %>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :location, "Zone d'intervention *", class: "form-label" %>
+                <%= f.text_field :location, class: "form-control", placeholder: "Ex: Paris, Île-de-France" %>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :level, "Niveau enseigné *", class: "form-label" %>
+                <%= f.select :level, Coach::LEVEL, { prompt: "Sélectionnez un niveau" }, class: "form-select" %>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Disciplines enseignées *</label>
+                <div class="row g-2">
+                  <% Coach::SPECIALITIES.each do |speciality| %>
+                    <div class="col-md-6">
+                      <div class="form-check">
+                        <%= check_box_tag 'coach[specialities][]', speciality,
+                            @coach.specialities.to_s.include?(speciality),
+                            id: "speciality_#{speciality.parameterize}",
+                            class: "form-check-input" %>
+                        <%= label_tag "speciality_#{speciality.parameterize}", speciality, class: "form-check-label" %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="mb-3" style="color: #5b3e25;"><i class="fas fa-calendar-alt me-2"></i>Disponibilités</h5>
+
+            <div id="availabilities-container">
+              <%= f.fields_for :coach_availabilities do |af| %>
+                <div class="availability-row border rounded p-3 mb-3">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label">Jour</label>
+                      <%= af.select :days_off, CoachAvailability::DAYS, { prompt: "Sélectionnez un jour" }, class: "form-select" %>
+                    </div>
+                    <div class="col-md-6">
+                      <%= af.label :start_time, "Début", class: "form-label" %>
+                      <%= af.time_field :start_time, class: "form-control" %>
+                    </div>
+                    <div class="col-md-6">
+                      <%= af.label :end_time, "Fin", class: "form-label" %>
+                      <%= af.time_field :end_time, class: "form-control" %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 justify-content-between">
+          <%= link_to "Annuler", root_path, class: "btn btn-outline-secondary" %>
+          <%= f.submit "Soumettre ma candidature", class: "btn btn-brown" %>
+        </div>
+
+      <% end %>
+
+    </div>
+  </div>
+</div>

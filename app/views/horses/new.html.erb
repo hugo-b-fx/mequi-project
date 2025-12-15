@@ -1,0 +1,67 @@
+<%= render "shared/public_navbar" %>
+
+<div class="rider-profile-page">
+  <div class="container" style="padding-top: 100px; padding-bottom: 60px;">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+
+        <%= link_to dashboard_user_path(current_user), class: "back-link" do %>
+          <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+        <% end %>
+
+        <div class="form-card">
+          <div class="form-card-header">
+            <div class="form-icon">
+              <i class="fas fa-horse"></i>
+            </div>
+            <h1>Ajouter un cheval</h1>
+            <p>Enregistrez votre compagnon pour réserver des séances</p>
+          </div>
+
+          <%= form_with model: @horse, local: true, class: "form-body" do |f| %>
+            <% if @horse.errors.any? %>
+              <div class="alert alert-danger">
+                <% @horse.errors.full_messages.each do |message| %>
+                  <div><%= message %></div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="form-group">
+              <%= f.label :name, "Nom du cheval" %>
+              <%= f.text_field :name, class: "form-control", placeholder: "Ex: Eclipse", required: true %>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <%= f.label :age, "Âge (années)" %>
+                <%= f.number_field :age, class: "form-control", min: 0, max: 40, placeholder: "8" %>
+              </div>
+              <div class="form-group">
+                <%= f.label :breed, "Race" %>
+                <%= f.select :breed, Horse::BREEDS, { include_blank: "Sélectionner" }, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :discipline, "Discipline principale" %>
+              <%= f.select :discipline, Horse::DISCIPLINES, { include_blank: "Sélectionner" }, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :photos, "Photos (optionnel)" %>
+              <%= f.file_field :photos, multiple: true, class: "form-control", accept: "image/*" %>
+              <span class="form-hint">JPG ou PNG, plusieurs photos possibles</span>
+            </div>
+
+            <div class="form-actions">
+              <%= link_to "Annuler", dashboard_user_path(current_user), class: "btn-cancel" %>
+              <%= f.submit "Ajouter", class: "btn-submit" %>
+            </div>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div id="favorite-btn-<%= coach.id %>" class="favorite-btn-wrapper">
+  <% if user_signed_in? %>
+    <% if current_user.has_favorited?(coach) %>
+      <%= button_to coach_favorite_path(coach),
+                    method: :delete,
+                    class: "btn-favorite active",
+                    title: "Retirer des favoris",
+                    data: { turbo_method: :delete } do %>
+        <i class="fas fa-heart"></i>
+      <% end %>
+    <% else %>
+      <%= button_to coach_favorite_path(coach),
+                    method: :post,
+                    class: "btn-favorite",
+                    title: "Ajouter aux favoris",
+                    data: { turbo_method: :post } do %>
+        <i class="far fa-heart"></i>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= link_to new_user_session_path, class: "btn-favorite", title: "Connectez-vous pour ajouter aux favoris" do %>
+      <i class="far fa-heart"></i>
+    <% end %>
+  <% end %>
+</div>

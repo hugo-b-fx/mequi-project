@@ -1,29 +1,150 @@
-<h2>Sign up</h2>
+<div class="auth-page" style="min-height: 100vh; background: #f8f5f2;">
+  <div class="container py-5">
+    <div class="row justify-content-center align-items-center">
+      <!-- Colonne gauche : texte / ambiance -->
+      <div class="col-lg-6 mb-4 mb-lg-0 d-none d-lg-block">
+        <div class="p-4">
+          <span class="badge rounded-pill px-3 py-2 mb-3" style="background:#e0e8ff; color:#26427d;">
+            M'equi - Plateforme equestre
+          </span>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+          <h1 class="mb-3" style="color:#5f3b2f; font-weight: 700;">
+            Rejoins la communaute<br>des cavaliers et coachs.
+          </h1>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+          <p class="lead text-muted mb-4">
+            Cree ton compte pour acceder a des centaines de coachs qualifies et gerer tes seances facilement.
+          </p>
+
+          <ul class="list-unstyled text-muted mb-4">
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Trouve le coach ideal pour ta discipline
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Reserve tes seances en quelques clics
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check-circle me-2" style="color:#7b93c9;"></i>
+              Gere ton ecurie et tes chevaux
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-3 mt-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center me-2" style="width:40px; height:40px;">
+                <i class="fas fa-horse-head" style="color:#5f3b2f;"></i>
+              </div>
+              <div>
+                <div class="small text-muted">Inscription</div>
+                <strong style="color:#5f3b2f;">100% gratuite</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne droite : formulaire inscription -->
+      <div class="col-lg-5 col-md-8">
+        <div class="card-mequi shadow-mequi-lg rounded-4" style="border: none;">
+          <div class="card-body p-4 p-md-5">
+
+            <div class="text-center mb-4">
+              <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                   style="width:64px; height:64px; background:#f5efe9;">
+                <i class="fas fa-user-plus fa-2x" style="color:#5f3b2f;"></i>
+              </div>
+              <h2 class="h4 mb-1" style="color:#5f3b2f; font-weight: 600;">
+                Creer un compte
+              </h2>
+              <p class="text-muted small mb-0">
+                Remplis le formulaire pour rejoindre M'equi
+              </p>
+            </div>
+
+            <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+              <% if resource.errors.any? %>
+                <div class="alert alert-danger small mb-3">
+                  <% resource.errors.full_messages.each do |message| %>
+                    <div><%= message %></div>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <div class="row g-3 mb-3">
+                <div class="col-6">
+                  <label class="form-label">Prenom</label>
+                  <%= f.text_field :first_name, class: "form-control", placeholder: "Jean", required: true %>
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Nom</label>
+                  <%= f.text_field :last_name, class: "form-control", placeholder: "Dupont", required: true %>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Adresse email</label>
+                <%= f.email_field :email,
+                                  autofocus: true,
+                                  autocomplete: "email",
+                                  class: "form-control",
+                                  placeholder: "jean.dupont@email.com",
+                                  required: true %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <%= f.password_field :password,
+                                     autocomplete: "new-password",
+                                     class: "form-control",
+                                     placeholder: "Minimum 6 caracteres",
+                                     required: true %>
+                <% if @minimum_password_length %>
+                  <small class="text-muted"><%= @minimum_password_length %> caracteres minimum</small>
+                <% end %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Confirmer le mot de passe</label>
+                <%= f.password_field :password_confirmation,
+                                     autocomplete: "new-password",
+                                     class: "form-control",
+                                     placeholder: "Retapez votre mot de passe",
+                                     required: true %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Je suis</label>
+                <%= f.select :role, [["Cavalier", "rider"], ["Coach", "coach"]], {}, class: "form-select", required: true %>
+              </div>
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn"
+                        style="background:#5b3e25; border:none; border-radius:999px; padding:0.75rem 1rem; color:#FFFFFF">
+                  <i class="fas fa-user-plus me-2"></i>
+                  Creer mon compte
+                </button>
+              </div>
+
+              <div class="text-center text-muted small">
+                Deja inscrit ?
+                <%= link_to "Se connecter", new_session_path(resource_name),
+                            class: "text-decoration-none",
+                            style: "color:#7b93c9;" %>
+              </div>
+            <% end %>
+
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <small class="text-muted">
+            <i class="fas fa-lock me-1"></i>
+            Inscription securisee - Vos donnees sont protegees
+          </small>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

@@ -1,0 +1,144 @@
+<%= render "shared/public_navbar" %>
+
+<div class="rider-profile-page">
+  <!-- Header Banner - Identique au dashboard -->
+  <div class="rider-header">
+    <div class="container">
+      <div class="rider-header-content">
+        <div class="rider-avatar">
+          <% if @user.photo.attached? %>
+            <%= image_tag @user.photo, alt: @user.full_name %>
+          <% else %>
+            <span class="rider-initials"><%= @user.initials %></span>
+          <% end %>
+        </div>
+
+        <div class="rider-info">
+          <h1><%= @user.full_name %></h1>
+          <div class="rider-meta">
+            <span><i class="fas fa-pen"></i>Modifier mon profil</span>
+          </div>
+        </div>
+
+        <div class="rider-actions">
+          <%= link_to dashboard_user_path(@user), class: "btn-rider-edit" do %>
+            <i class="fas fa-arrow-left"></i><span>Retour</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="rider-content">
+    <div class="container">
+      <div class="edit-profile-grid">
+
+        <!-- Formulaire principal -->
+        <div class="edit-main-col">
+          <div class="edit-card">
+            <div class="edit-card-header">
+              <h2><i class="fas fa-user-edit"></i>Informations personnelles</h2>
+            </div>
+
+            <%= form_with model: @user, local: true, class: "edit-form" do |f| %>
+              <% if @user.errors.any? %>
+                <div class="alert alert-danger mb-4">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <div><%= message %></div>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <%= f.label :first_name, "Prénom", class: "form-label" %>
+                  <%= f.text_field :first_name, class: "form-control", required: true %>
+                </div>
+                <div class="form-group">
+                  <%= f.label :last_name, "Nom", class: "form-label" %>
+                  <%= f.text_field :last_name, class: "form-control", required: true %>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <%= f.label :phone, "Téléphone", class: "form-label" %>
+                <%= f.telephone_field :phone, class: "form-control", placeholder: "06 XX XX XX XX" %>
+              </div>
+
+              <div class="form-group">
+                <%= f.label :bio, "À propos de moi", class: "form-label" %>
+                <%= f.text_area :bio, class: "form-control", rows: 4, placeholder: "Quelques mots sur vous et votre passion pour l'équitation..." %>
+              </div>
+
+              <div class="form-group">
+                <%= f.label :photo, "Photo de profil", class: "form-label" %>
+                <div class="photo-upload-wrapper">
+                  <% if @user.photo.attached? %>
+                    <div class="current-photo">
+                      <%= image_tag @user.photo, alt: @user.full_name %>
+                      <span class="photo-label">Photo actuelle</span>
+                    </div>
+                  <% end %>
+                  <div class="upload-area">
+                    <%= f.file_field :photo, class: "form-control", accept: "image/*" %>
+                    <small class="text-muted">JPG, PNG. Max 5MB.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <%= link_to "Annuler", dashboard_user_path(@user), class: "btn-cancel" %>
+                <%= f.submit "Enregistrer les modifications", class: "btn-save" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Sidebar - Mes chevaux -->
+        <div class="edit-side-col">
+          <div class="edit-card">
+            <div class="edit-card-header">
+              <h2><i class="fas fa-horse"></i>Mes chevaux</h2>
+              <%= link_to new_horse_path, class: "btn-add-small" do %>
+                <i class="fas fa-plus"></i>
+              <% end %>
+            </div>
+
+            <% if @user.horses.any? %>
+              <div class="horses-edit-list">
+                <% @user.horses.each do |horse| %>
+                  <div class="horse-edit-item">
+                    <div class="horse-edit-photo">
+                      <% if horse.photos.attached? %>
+                        <%= image_tag horse.primary_photo, alt: horse.name %>
+                      <% else %>
+                        <i class="fas fa-horse"></i>
+                      <% end %>
+                    </div>
+                    <div class="horse-edit-info">
+                      <strong><%= horse.name %></strong>
+                      <span><%= horse.breed.presence || "—" %> · <%= horse.age_display %></span>
+                    </div>
+                    <%= link_to edit_horse_path(horse), class: "btn-edit-horse" do %>
+                      <i class="fas fa-pen"></i>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="empty-horses-edit">
+                <i class="fas fa-horse"></i>
+                <p>Aucun cheval enregistré</p>
+                <%= link_to new_horse_path, class: "btn-add-horse-small" do %>
+                  <i class="fas fa-plus"></i>Ajouter un cheval
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

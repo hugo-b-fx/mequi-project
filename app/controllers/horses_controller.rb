@@ -13,7 +13,7 @@ class HorsesController < ApplicationController
     @horse = current_user.horses.build(horse_params)
 
     if @horse.save
-      redirect_to user_path(current_user), notice: "#{@horse.name} a été ajouté avec succès !"
+      redirect_to dashboard_user_path(current_user), notice: "#{@horse.name} a été ajouté avec succès !"
     else
       render :new, status: :unprocessable_entity
     end
@@ -26,7 +26,7 @@ class HorsesController < ApplicationController
   # PATCH/PUT /horses/:id
   def update
     if @horse.update(horse_params)
-      redirect_to user_path(current_user), notice: "Les informations de #{@horse.name} ont été mises à jour"
+      redirect_to dashboard_user_path(current_user), notice: "Les informations de #{@horse.name} ont été mises à jour"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -36,7 +36,7 @@ class HorsesController < ApplicationController
   def destroy
     horse_name = @horse.name
     @horse.destroy
-    redirect_to user_path(current_user), notice: "#{horse_name} a été supprimé"
+    redirect_to dashboard_user_path(current_user), notice: "#{horse_name} a été supprimé"
   end
 
   # DELETE /horses/:id/remove_photo

@@ -1,50 +1,33 @@
-<div class="container py-4">
-  <!-- Lien retour -->
-  <%= link_to "← Retour", :back, class: "text-decoration-none text-muted mb-3 d-inline-block" %>
+<%= render "shared/public_navbar" %>
 
-  <!-- Header avec bannière MEQUI -->
-  <div class="rider-header-banner" style="background: linear-gradient(135deg, #7F5434 0%, #443122 100%); height: 180px; border-radius: 16px;">
-    <div class="container h-100 d-flex align-items-end pb-4">
-      <div class="row w-100 align-items-end">
-        <!-- Photo de profil -->
-        <div class="col-auto">
-          <div class="rider-profile-photo" style="margin-bottom: -50px;">
-            <% if @user.photo.attached? %>
-              <%= image_tag @user.photo, class: "rounded-circle border border-4 border-white shadow", style: "width: 130px; height: 130px; object-fit: cover;" %>
-            <% else %>
-              <div class="rounded-circle border border-4 border-white shadow bg-white d-flex align-items-center justify-content-center" style="width: 130px; height: 130px;">
-                <span class="fs-2 fw-bold text-mequi-primary"><%= @user.initials %></span>
-              </div>
-            <% end %>
+<div class="rider-profile-page">
+  <div class="profile-header">
+    <div class="container">
+      <div class="profile-header-content">
+        <div class="profile-avatar">
+          <% if @user.photo.attached? %>
+            <%= image_tag @user.photo, alt: @user.full_name %>
+          <% else %>
+            <span class="avatar-initials"><%= @user.initials %></span>
+          <% end %>
+        </div>
+
+        <div class="profile-info">
+          <h1><%= @user.full_name %></h1>
+          <div class="profile-meta">
+            <span><i class="fas fa-horse"></i> <%= pluralize(@horses.count, "cheval", "chevaux") %></span>
+            <span><i class="fas fa-graduation-cap"></i> <%= @total_lessons %> cours</span>
+            <span><i class="fas fa-clock"></i> <%= @total_hours %>h</span>
           </div>
         </div>
 
-        <!-- Infos principales -->
-        <div class="col">
-          <div class="text-white">
-            <h1 class="h2 mb-2"><%= @user.full_name %></h1>
-            <div class="d-flex align-items-center gap-3 flex-wrap small">
-              <span>
-                <i class="fas fa-horse me-1"></i>
-                <%= pluralize(@horses.count, "cheval", "chevaux") %>
-              </span>
-              <span>
-                <i class="fas fa-graduation-cap me-1"></i>
-                <%= @total_lessons %> cours complétés
-              </span>
-              <span>
-                <i class="fas fa-clock me-1"></i>
-                <%= @total_hours %>h d'entraînement
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bouton éditer (si c'est le propriétaire) -->
         <% if user_signed_in? && current_user == @user %>
-          <div class="col-auto mb-3">
-            <%= link_to edit_user_path(@user), class: "btn btn-light btn-sm" do %>
-              <i class="fas fa-edit me-2"></i>Modifier mon profil
+          <div class="profile-actions">
+            <%= link_to edit_user_path(@user), class: "btn-profile-edit" do %>
+              <i class="fas fa-pen"></i> Modifier
+            <% end %>
+            <%= link_to dashboard_user_path(@user), class: "btn-profile-dashboard" do %>
+              <i class="fas fa-th-large"></i> Tableau de bord
             <% end %>
           </div>
         <% end %>
@@ -52,242 +35,164 @@
     </div>
   </div>
 
-  <div class="row g-4 mt-4">
-    <!-- Colonne gauche - Contenu principal -->
-    <div class="col-lg-8">
-
-      <!-- Stats rapides -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <div class="row text-center g-3">
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @total_lessons %></div>
-                <div class="stat-label">Cours</div>
+  <div class="profile-content">
+    <div class="container">
+      <div class="profile-grid">
+        <div class="profile-main">
+          <div class="profile-card">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-value"><%= @total_lessons %></span>
+                <span class="stat-label">Cours</span>
               </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @total_hours %>h</div>
-                <div class="stat-label">Entraînement</div>
+              <div class="stat-item">
+                <span class="stat-value"><%= @total_hours %>h</span>
+                <span class="stat-label">Entraînement</span>
               </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @horses.count %></div>
-                <div class="stat-label">Chevaux</div>
+              <div class="stat-item">
+                <span class="stat-value"><%= @horses.count %></span>
+                <span class="stat-label">Chevaux</span>
               </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="stat-card">
-                <div class="stat-number"><%= @user.favorite_discipline %></div>
-                <div class="stat-label">Discipline</div>
+              <div class="stat-item">
+                <span class="stat-value"><%= @user.favorite_discipline %></span>
+                <span class="stat-label">Discipline</span>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- À propos -->
-      <% if @user.bio.present? %>
-        <div class="card-mequi mb-4">
-          <div class="card-body">
-            <h5 class="form-section-title">
-              <i class="fas fa-user-circle"></i>
-              À propos
-            </h5>
-            <p class="text-muted mb-0"><%= simple_format(@user.bio) %></p>
-          </div>
-        </div>
-      <% end %>
+          <% if @user.bio.present? %>
+            <div class="profile-card">
+              <h2><i class="fas fa-user"></i> À propos</h2>
+              <p class="bio-text"><%= simple_format(@user.bio) %></p>
+            </div>
+          <% end %>
 
-
-
-      <!-- Mes chevaux -->
-      <div class="card-mequi mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="form-section-title mb-0">
-              <i class="fas fa-horse"></i>
-              Mes chevaux
-            </h5>
-            <% if user_signed_in? && current_user == @user %>
-              <%= link_to new_horse_path, class: "btn-mequi-outline btn btn-sm" do %>
-                <i class="fas fa-plus me-2"></i>Ajouter un cheval
+          <div class="profile-card">
+            <div class="card-header-row">
+              <h2><i class="fas fa-horse"></i> Mes chevaux</h2>
+              <% if user_signed_in? && current_user == @user %>
+                <%= link_to new_horse_path, class: "btn-add" do %>
+                  <i class="fas fa-plus"></i> Ajouter
+                <% end %>
               <% end %>
+            </div>
+
+            <% if @horses.any? %>
+              <div class="horses-list">
+                <% @horses.each do |horse| %>
+                  <div class="horse-item">
+                    <div class="horse-photo">
+                      <% if horse.photos.attached? %>
+                        <%= image_tag horse.primary_photo, alt: horse.name %>
+                      <% else %>
+                        <i class="fas fa-horse"></i>
+                      <% end %>
+                    </div>
+                    <div class="horse-details">
+                      <h3><%= horse.name %></h3>
+                      <div class="horse-tags">
+                        <% if horse.breed.present? %>
+                          <span class="tag"><%= horse.breed %></span>
+                        <% end %>
+                        <% if horse.age.present? %>
+                          <span class="tag"><%= horse.age_display %></span>
+                        <% end %>
+                        <% if horse.discipline.present? %>
+                          <span class="tag"><%= horse.discipline %></span>
+                        <% end %>
+                      </div>
+                    </div>
+                    <% if user_signed_in? && current_user == @user %>
+                      <%= link_to edit_horse_path(horse), class: "horse-edit-btn" do %>
+                        <i class="fas fa-pen"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="empty-state">
+                <i class="fas fa-horse"></i>
+                <p>Aucun cheval enregistré</p>
+                <% if user_signed_in? && current_user == @user %>
+                  <%= link_to new_horse_path, class: "btn-add-first" do %>
+                    <i class="fas fa-plus"></i> Ajouter mon premier cheval
+                  <% end %>
+                <% end %>
+              </div>
             <% end %>
           </div>
 
-          <% if @horses.any? %>
-            <div class="row g-3">
-              <% @horses.each do |horse| %>
-                <div class="col-md-6">
-                  <div class="card-mequi h-100 horse-card">
-                    <div class="card-body">
-                      <div class="d-flex gap-3">
-                        <!-- Photo du cheval -->
-                        <div class="flex-shrink-0">
-                          <% if horse.photos.attached? %>
-                            <%= image_tag horse.primary_photo, class: "rounded", style: "width: 80px; height: 80px; object-fit: cover;" %>
-                          <% else %>
-                            <div class="rounded bg-mequi-light d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                              <i class="fas fa-horse fa-2x text-mequi-primary"></i>
-                            </div>
-                          <% end %>
-                        </div>
-
-                        <!-- Infos du cheval -->
-                        <div class="flex-grow-1">
-                          <h6 class="mb-1 text-mequi-primary"><%= horse.name %></h6>
-                          <div class="small text-muted">
-                            <div><i class="fas fa-dna me-1"></i><%= horse.breed || "Race non spécifiée" %></div>
-                            <div><i class="fas fa-birthday-cake me-1"></i><%= horse.age_display %></div>
-                            <div><i class="fas fa-star me-1"></i><%= horse.discipline || "Loisir" %></div>
-                          </div>
-
-                          
-                        <!-- Actions (si propriétaire) -->
-                        <% if user_signed_in? && current_user == @user %>
-                          <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                              <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                              <li>
-                                <%= link_to edit_horse_path(horse), class: "dropdown-item" do %>
-                                  <i class="fas fa-edit me-2"></i>Modifier
-                                <% end %>
-                              </li>
-                              <li>
-                                <%= link_to horse_path(horse), method: :delete,
-                                    data: { confirm: "Êtes-vous sûr de vouloir supprimer #{horse.name} ?" },
-                                    class: "dropdown-item text-danger" do %>
-                                  <i class="fas fa-trash me-2"></i>Supprimer
-                                <% end %>
-                              </li>
-                            </ul>
-                          </div>
-                        <% end %>
-                      </div>
-
-                      <% if horse.description.present? %>
-                        <p class="small text-muted mt-3 mb-0"><%= truncate(horse.description, length: 100) %></p>
-                      <% end %>
+          <% if @completed_bookings.any? %>
+            <div class="profile-card">
+              <h2><i class="fas fa-history"></i> Cours récents</h2>
+              <div class="bookings-list">
+                <% @completed_bookings.each do |booking| %>
+                  <div class="booking-item">
+                    <div class="booking-icon">
+                      <i class="fas fa-check"></i>
                     </div>
+                    <div class="booking-details">
+                      <strong>Cours avec <%= booking.coach.full_name %></strong>
+                      <span><%= l(booking.start_at, format: :long) %></span>
+                    </div>
+                    <% if booking.review.present? %>
+                      <div class="booking-rating">
+                        <i class="fas fa-star"></i> <%= booking.review.rating %>/5
+                      </div>
+                    <% end %>
                   </div>
-                </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="profile-sidebar">
+          <% if user_signed_in? && current_user != @user && current_user.coach? %>
+            <div class="profile-card contact-card">
+              <h3>Contacter <%= @user.first_name %></h3>
+              <%= link_to "#", class: "btn-contact" do %>
+                <i class="fas fa-envelope"></i> Envoyer un message
               <% end %>
             </div>
-          <% else %>
-            <div class="text-center py-4 text-muted">
-              <i class="fas fa-horse fa-3x mb-3 d-block"></i>
-              <p>Aucun cheval enregistré pour le moment</p>
-              <% if user_signed_in? && current_user == @user %>
-                <%= link_to "Ajouter mon premier cheval", new_horse_path, class: "btn-mequi-primary btn btn-sm" %>
-              <% end %>
+          <% end %>
+
+          <% if @reviews_given.any? %>
+            <div class="profile-card">
+              <h3><i class="fas fa-comment"></i> Avis laissés</h3>
+              <div class="reviews-list">
+                <% @reviews_given.each do |review| %>
+                  <div class="review-item">
+                    <div class="review-header">
+                      <span class="review-coach">Coach: <%= review.booking.coach.full_name %></span>
+                      <span class="review-stars"><%= '★' * review.rating.to_i %></span>
+                    </div>
+                    <p>"<%= truncate(review.comment, length: 80) %>"</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if user_signed_in? && current_user == @user %>
+            <div class="profile-card">
+              <h3><i class="fas fa-bolt"></i> Accès rapide</h3>
+              <div class="quick-links">
+                <%= link_to coaches_path, class: "quick-link" do %>
+                  <i class="fas fa-search"></i> Trouver un coach
+                <% end %>
+                <%= link_to new_horse_path, class: "quick-link" do %>
+                  <i class="fas fa-plus"></i> Ajouter un cheval
+                <% end %>
+                <%= link_to dashboard_user_path(@user), class: "quick-link" do %>
+                  <i class="fas fa-calendar"></i> Mon agenda
+                <% end %>
+              </div>
             </div>
           <% end %>
         </div>
       </div>
-
-      <!-- Cours passés -->
-      <% if @completed_bookings.any? %>
-        <div class="card-mequi mb-4">
-          <div class="card-body">
-            <h5 class="form-section-title">
-              <i class="fas fa-history"></i>
-              Cours récents
-            </h5>
-
-            <div class="timeline">
-              <% @completed_bookings.each do |booking| %>
-                <div class="timeline-item d-flex gap-3 mb-3 pb-3 border-bottom">
-                  <div class="timeline-icon">
-                    <div class="rounded-circle bg-mequi-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                      <i class="fas fa-check text-success"></i>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-start">
-                      <div>
-                        <strong class="d-block">Cours avec <%= booking.coach.full_name %></strong>
-                        <small class="text-muted">
-                          <%= l(booking.start_at, format: :long) %>
-                        </small>
-                      </div>
-                      <% if booking.review.present? %>
-                        <span class="badge bg-success">
-                          <i class="fas fa-star me-1"></i><%= booking.review.rating %>/5
-                        </span>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-
-            <% if @user.total_lessons > 6 %>
-              <%= link_to "Voir tous les cours", "#", class: "btn-mequi-outline btn btn-sm" %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-
-    </div>
-
-    <!-- Colonne droite - Infos complémentaires -->
-    <div class="col-lg-4">
-
-      <!-- Contact (si ce n'est pas le propriétaire) -->
-      <% if user_signed_in? && current_user != @user && current_user.coach? %>
-        <div class="card-mequi shadow-mequi mb-4">
-          <div class="card-body text-center">
-            <h6 class="mb-3">Contacter <%= @user.first_name %></h6>
-            <%= link_to new_chat_path(user_id: @user.id), class: "btn-mequi-primary btn w-100" do %>
-              <i class="fas fa-envelope me-2"></i>Envoyer un message
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-
-
-      <!-- Avis laissés -->
-      <% if @reviews_given.any? %>
-        <div class="card-mequi mb-4">
-          <div class="card-body">
-            <h6 class="form-section-title mb-3">
-              <i class="fas fa-comment-dots"></i>
-              Avis laissés
-            </h6>
-            <% @reviews_given.each do |review| %>
-              <div class="review-card mb-3">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                  <small class="text-muted">Coach: <%= review.booking.coach.full_name %></small>
-                  <span class="star-rating">
-                    <%= '★' * review.rating.to_i %>
-                  </span>
-                </div>
-                <p class="small mb-0">"<%= truncate(review.comment, length: 80) %>"</p>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-
     </div>
   </div>
 </div>
-
-<style>
-  .horse-card {
-    transition: all 0.3s ease;
-  }
-
-  .horse-card:hover {
-    transform: translateY(-2px);
-  }
-
-  .timeline-item:last-child {
-    border-bottom: none !important;
-  }
-</style>

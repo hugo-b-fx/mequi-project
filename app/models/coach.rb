@@ -5,6 +5,8 @@ class Coach < ApplicationRecord
   has_many :bookings, dependent: :destroy
   has_many :coach_availabilities, dependent: :destroy
   has_many :reviews, through: :bookings
+  has_many :favorite_coaches, dependent: :destroy
+  has_many :fans, through: :favorite_coaches, source: :user
 
   validates :user_id, presence: true, uniqueness: true
   validates :specialities, presence: true

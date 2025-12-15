@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     member do
       get :availability
     end
+    # Favoris (wishlist)
+    resource :favorite, only: [:create, :destroy], controller: "favorite_coaches"
   end
 
   # Disponibilités des coachs

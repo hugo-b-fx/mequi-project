@@ -35,6 +35,7 @@
         <div class="col-md-6 text-white">
           <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
             <h1 class="h2 mb-0"><%= @coach.user.full_name %></h1>
+            <%= render "favorite_coaches/button", coach: @coach %>
           </div>
 
           <% specialities = (@coach.specialities || "").split(",").map(&:strip) %>
@@ -267,8 +268,9 @@
                 <div class="mb-3">
                   <label class="form-label">Votre cheval</label>
                   <% if current_user.horses.any? %>
+                    <% selected_horse_id = params[:horse_id].present? ? params[:horse_id].to_i : current_user.horses.first.id %>
                     <%= select_tag :horse_id,
-                                   options_from_collection_for_select(current_user.horses, :id, :name),
+                                   options_from_collection_for_select(current_user.horses, :id, :name, selected_horse_id),
                                    class: "form-select",
                                    required: true %>
                   <% else %>

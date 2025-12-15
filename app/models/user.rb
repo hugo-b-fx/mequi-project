@@ -10,9 +10,13 @@ class User < ApplicationRecord
   has_many :coach_chats, class_name: "Chat", foreign_key: "coach_id"
   has_one_attached :photo
 
- #Association avec les bookings (en tant que cavalier)
-  has_many :bookings, dependent: :destroy
+  # Association avec les bookings (en tant que cavalier, via horses)
+  has_many :bookings, through: :horses
   has_many :booked_coaches, through: :bookings, source: :coach
+
+  # Favoris (wishlist coachs)
+  has_many :favorite_coaches, dependent: :destroy
+  has_many :favorited_coaches, through: :favorite_coaches, source: :coach
 
  # Validations
   validates :first_name, presence: true
@@ -29,6 +33,10 @@ class User < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}".strip
+  end
+
+  def initials
+    "#{first_name&.first}#{last_name&.first}".upcase
   end
 
   def coach?
@@ -59,9 +67,17 @@ class User < ApplicationRecord
   end
 
   def upcoming_bookings
-    bookings.where(status: 'pending')
+    bookings.where(status: ['pending', 'confirmed'])
              .where('start_at > ?', Time.current)
              .order(start_at: :asc)
+  end
+
+  def has_favorited?(coach)
+    favorite_coaches.exists?(coach_id: coach.id)
+  end
+
+  def contacted_coaches
+    booked_coaches.distinct.includes(:user)
   end
 
   # Méthode pour accepter les attributs imbriqués des chevaux

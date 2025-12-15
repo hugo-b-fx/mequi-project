@@ -1,0 +1,100 @@
+<%= render "shared/public_navbar" %>
+
+<div class="rider-profile-page">
+  <div class="container" style="padding-top: 100px; padding-bottom: 60px;">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+
+        <%= link_to dashboard_user_path(current_user), class: "back-link" do %>
+          <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+        <% end %>
+
+        <div class="form-card">
+          <div class="form-card-header compact">
+            <div class="horse-photo-edit">
+              <% if @horse.photos.attached? %>
+                <%= image_tag @horse.primary_photo, alt: @horse.name %>
+              <% else %>
+                <i class="fas fa-horse"></i>
+              <% end %>
+            </div>
+            <div class="horse-info-edit">
+              <h1><%= @horse.name %></h1>
+              <p>Modifier les informations</p>
+            </div>
+          </div>
+
+          <%= form_with model: @horse, local: true, class: "form-body" do |f| %>
+            <% if @horse.errors.any? %>
+              <div class="alert alert-danger">
+                <% @horse.errors.full_messages.each do |message| %>
+                  <div><%= message %></div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="form-group">
+              <%= f.label :name, "Nom du cheval" %>
+              <%= f.text_field :name, class: "form-control", required: true %>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <%= f.label :age, "Âge (années)" %>
+                <%= f.number_field :age, class: "form-control", min: 0, max: 40 %>
+              </div>
+              <div class="form-group">
+                <%= f.label :breed, "Race" %>
+                <%= f.select :breed, Horse::BREEDS, { include_blank: "Sélectionner" }, class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :discipline, "Discipline principale" %>
+              <%= f.select :discipline, Horse::DISCIPLINES, { include_blank: "Sélectionner" }, class: "form-control" %>
+            </div>
+
+            <% if @horse.photos.attached? %>
+              <div class="form-group">
+                <label>Photos actuelles</label>
+                <div class="photos-grid">
+                  <% @horse.photos.each do |photo| %>
+                    <div class="photo-thumb">
+                      <%= image_tag photo, alt: "Photo" %>
+                      <%= link_to remove_photo_horse_path(@horse, photo_id: photo.id),
+                          method: :delete,
+                          data: { confirm: "Supprimer cette photo ?" },
+                          class: "photo-delete" do %>
+                        <i class="fas fa-times"></i>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="form-group">
+              <%= f.label :photos, "Ajouter des photos" %>
+              <%= f.file_field :photos, multiple: true, class: "form-control", accept: "image/*" %>
+            </div>
+
+            <div class="form-actions">
+              <%= link_to "Annuler", dashboard_user_path(current_user), class: "btn-cancel" %>
+              <%= f.submit "Enregistrer", class: "btn-submit" %>
+            </div>
+          <% end %>
+
+          <div class="form-danger-zone">
+            <%= link_to horse_path(@horse),
+                method: :delete,
+                data: { confirm: "Supprimer #{@horse.name} définitivement ?" },
+                class: "btn-delete" do %>
+              <i class="fas fa-trash"></i> Supprimer ce cheval
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

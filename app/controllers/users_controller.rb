@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   def login_selector
   end
-before_action :authenticate_user!, except: [:show]
+
+  before_action :authenticate_user!, except: [:show]
   before_action :set_user, only: [:show, :edit, :update, :dashboard]
   before_action :authorize_user, only: [:edit, :update, :dashboard]
 
@@ -16,24 +17,61 @@ before_action :authenticate_user!, except: [:show]
 
   # GET /users/:id/edit - Formulaire d'édition du profil
   def edit
-    # Construire 3 chevaux vides pour le formulaire si aucun cheval
     3.times { @user.horses.build } if @user.horses.empty?
   end
 
   # PATCH/PUT /users/:id - Mise à jour du profil
   def update
     if @user.update(user_params)
-      redirect_to user_path(@user), notice: "Votre profil a été mis à jour avec succès !"
+      redirect_to dashboard_user_path(@user), notice: "Profil mis à jour !"
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
-  # GET /users/:id/dashboard - Tableau de bord personnel (optionnel)
+  # GET /users/:id/dashboard - Tableau de bord personnel
   def dashboard
-    @upcoming_bookings = @user.upcoming_bookings.limit(5)
-    @recent_bookings = @user.completed_bookings.limit(5)
-    @horses = @user.horses
+    @horses = @user.horses.includes(:bookings).order(created_at: :desc)
+
+    # Préparer les prochaines sessions par cheval
+    @horses_with_sessions = @horses.map do |horse|
+      upcoming = horse.bookings
+                      .where("start_at > ?", Time.current)
+                      .where(status: ["pending", "confirmed"])
+                      .order(start_at: :asc)
+                      .limit(3)
+                      .includes(coach: :user)
+      {
+        horse: horse,
+        upcoming_sessions: upcoming
+      }
+    end
+
+    # Agenda global
+    @upcoming_bookings = @user.upcoming_bookings
+                              .includes(:horse, coach: :user)
+                              .order(start_at: :asc)
+                              .limit(10)
+
+    @past_bookings = @user.completed_bookings
+                          .includes(:horse, coach: :user)
+                          .order(start_at: :desc)
+                          .limit(8)
+
+    # Coachs favoris (wishlist)
+    @favorite_coaches = @user.favorited_coaches.includes(:user).limit(6)
+
+    # Coachs contactés (via bookings)
+    @contacted_coaches = @user.contacted_coaches.limit(6)
+
+    # Stats
+    @stats = {
+      total_lessons: @user.total_lessons,
+      total_hours: @user.total_hours_trained.round,
+      horses_count: @horses.count,
+      coaches_count: @user.booked_coaches.distinct.count,
+      favorites_count: @user.favorite_coaches.count
+    }
   end
 
   private

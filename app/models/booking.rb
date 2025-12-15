@@ -1,5 +1,5 @@
 class Booking < ApplicationRecord
   belongs_to :horse
   belongs_to :coach
-  has_many :reviews
+  has_one :review, dependent: :destroy
 end

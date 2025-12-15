@@ -1,0 +1,317 @@
+<%= render "shared/public_navbar" %>
+
+<div class="rider-profile-page">
+  <!-- Header compact Rider -->
+  <div class="rider-header">
+    <div class="container">
+      <div class="rider-header-content">
+        <div class="rider-avatar">
+          <% if @user.photo.attached? %>
+            <%= image_tag @user.photo, alt: @user.full_name %>
+          <% else %>
+            <span class="rider-initials"><%= @user.initials %></span>
+          <% end %>
+        </div>
+
+        <div class="rider-info">
+          <h1><%= @user.full_name %></h1>
+          <div class="rider-meta">
+            <span><i class="fas fa-horse-head"></i><%= @stats[:horses_count] %> cheval<%= @stats[:horses_count] > 1 ? 'x' : '' %></span>
+            <span><i class="fas fa-graduation-cap"></i><%= @stats[:total_lessons] %> cours</span>
+            <span><i class="fas fa-clock"></i><%= @stats[:total_hours] %>h</span>
+            <span><i class="fas fa-heart"></i><%= @stats[:favorites_count] %> favoris</span>
+          </div>
+        </div>
+
+        <div class="rider-actions">
+          <%= link_to edit_user_path(@user), class: "btn-rider-edit" do %>
+            <i class="fas fa-pen"></i><span>Modifier</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rider-content">
+    <div class="container">
+    <!-- Grid principale responsive -->
+    <div class="dashboard-grid">
+
+      <!-- Section Mes Chevaux (pleine largeur sur mobile, 2/3 sur desktop) -->
+      <section class="horses-section grid-col-main">
+        <div class="section-header">
+          <h2><i class="fas fa-horse"></i>Mes chevaux</h2>
+          <%= link_to new_horse_path, class: "btn-add-horse" do %>
+            <i class="fas fa-plus"></i>Ajouter
+          <% end %>
+        </div>
+
+        <% if @horses_with_sessions.any? %>
+          <div class="horses-grid">
+            <% @horses_with_sessions.each do |data| %>
+              <% horse = data[:horse] %>
+              <% sessions = data[:upcoming_sessions] %>
+
+              <div class="horse-card">
+                <div class="horse-card-header">
+                  <div class="horse-avatar">
+                    <% if horse.photos.attached? %>
+                      <%= image_tag horse.primary_photo, alt: horse.name %>
+                    <% else %>
+                      <i class="fas fa-horse"></i>
+                    <% end %>
+                  </div>
+                  <div class="horse-identity">
+                    <h3><%= horse.name %></h3>
+                    <div class="horse-details">
+                      <% if horse.breed.present? %>
+                        <span class="horse-tag"><%= horse.breed %></span>
+                      <% end %>
+                      <% if horse.discipline.present? %>
+                        <span class="horse-tag"><%= horse.discipline %></span>
+                      <% end %>
+                      <% if horse.age.present? %>
+                        <span class="horse-tag"><%= horse.age_display %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <%= link_to edit_horse_path(horse), class: "horse-edit-btn", title: "Modifier" do %>
+                    <i class="fas fa-pen"></i>
+                  <% end %>
+                </div>
+
+                <!-- Prochaines sessions de ce cheval -->
+                <div class="horse-sessions">
+                  <% if sessions.any? %>
+                    <div class="sessions-label">Prochaines sessions</div>
+                    <div class="sessions-list">
+                      <% sessions.each do |booking| %>
+                        <div class="session-item">
+                          <div class="session-date">
+                            <span class="session-day"><%= booking.start_at.day %></span>
+                            <span class="session-month"><%= I18n.l(booking.start_at, format: "%b") %></span>
+                          </div>
+                          <div class="session-info">
+                            <strong><%= booking.start_at.strftime("%Hh%M") %></strong>
+                            <span>avec <%= booking.coach.user.first_name %></span>
+                          </div>
+                          <span class="session-status status-<%= booking.status %>">
+                            <%= booking.status == 'confirmed' ? 'Confirmé' : 'En attente' %>
+                          </span>
+                        </div>
+                      <% end %>
+                    </div>
+                  <% else %>
+                    <div class="no-sessions">
+                      <i class="fas fa-calendar-times"></i>
+                      <span>Aucune session prévue</span>
+                    </div>
+                  <% end %>
+                </div>
+
+                <!-- CTA Prendre RDV -->
+                <div class="horse-card-footer">
+                  <%= link_to coaches_path(horse_id: horse.id), class: "btn-book-session" do %>
+                    <i class="fas fa-calendar-plus"></i>Prendre RDV pour <%= horse.name %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="empty-horses">
+            <div class="empty-icon">
+              <i class="fas fa-horse"></i>
+            </div>
+            <h3>Aucun cheval enregistré</h3>
+            <p>Ajoutez votre premier cheval pour commencer à réserver des cours.</p>
+            <%= link_to new_horse_path, class: "btn-add-first-horse" do %>
+              <i class="fas fa-plus"></i>Ajouter mon premier cheval
+            <% end %>
+          </div>
+        <% end %>
+      </section>
+
+      <!-- Sidebar Cards (1/3 sur desktop) -->
+      <aside class="grid-col-side">
+
+        <!-- Wishlist Coachs -->
+        <div class="sidebar-card wishlist-card">
+          <div class="card-header-mini">
+            <h3><i class="fas fa-heart"></i>Mes coachs favoris</h3>
+            <span class="badge-count"><%= @favorite_coaches.count %></span>
+          </div>
+
+          <% if @favorite_coaches.any? %>
+            <div class="coaches-mini-list">
+              <% @favorite_coaches.each do |coach| %>
+                <div class="coach-mini-item">
+                  <div class="coach-mini-avatar">
+                    <% if coach.user.photo.attached? %>
+                      <%= image_tag coach.user.photo, alt: coach.user.full_name %>
+                    <% else %>
+                      <span class="avatar-initials"><%= coach.user.initials %></span>
+                    <% end %>
+                  </div>
+                  <div class="coach-mini-info">
+                    <strong><%= coach.user.full_name %></strong>
+                    <span class="coach-mini-spec"><%= coach.specialities_list.first %></span>
+                  </div>
+                  <div class="coach-mini-actions">
+                    <%= link_to coach_path(coach), class: "btn-mini", title: "Voir profil" do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+                    <%= button_to coach_favorite_path(coach),
+                                  method: :delete,
+                                  class: "btn-mini btn-remove",
+                                  title: "Retirer",
+                                  data: { turbo_method: :delete, turbo_confirm: "Retirer des favoris ?" } do %>
+                      <i class="fas fa-times"></i>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="empty-mini">
+              <i class="far fa-heart"></i>
+              <p>Aucun coach favori</p>
+              <%= link_to "Découvrir les coachs", coaches_path, class: "btn-mini-link" %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Coachs contactés -->
+        <div class="sidebar-card contacted-card">
+          <div class="card-header-mini">
+            <h3><i class="fas fa-users"></i>Coachs contactés</h3>
+            <span class="badge-count"><%= @contacted_coaches.count %></span>
+          </div>
+
+          <% if @contacted_coaches.any? %>
+            <div class="coaches-mini-list">
+              <% @contacted_coaches.each do |coach| %>
+                <div class="coach-mini-item">
+                  <div class="coach-mini-avatar">
+                    <% if coach.user.photo.attached? %>
+                      <%= image_tag coach.user.photo, alt: coach.user.full_name %>
+                    <% else %>
+                      <span class="avatar-initials"><%= coach.user.initials %></span>
+                    <% end %>
+                  </div>
+                  <div class="coach-mini-info">
+                    <strong><%= coach.user.full_name %></strong>
+                    <span class="coach-mini-spec"><%= coach.specialities_list.first %></span>
+                  </div>
+                  <div class="coach-mini-actions">
+                    <%= link_to coach_path(coach), class: "btn-mini", title: "Voir profil" do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+                    <%= link_to coaches_path(horse_id: @horses.first&.id), class: "btn-mini btn-book", title: "Réserver" do %>
+                      <i class="fas fa-calendar-plus"></i>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="empty-mini">
+              <i class="fas fa-user-friends"></i>
+              <p>Aucun coach contacté</p>
+              <%= link_to "Trouver un coach", coaches_path, class: "btn-mini-link" %>
+            </div>
+          <% end %>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- Section Agenda (pleine largeur) -->
+    <section class="agenda-section">
+      <h2><i class="fas fa-calendar-alt"></i>Mon agenda</h2>
+
+      <div class="agenda-grid">
+        <!-- À venir -->
+        <div class="agenda-card">
+          <div class="agenda-card-header">
+            <h3>À venir</h3>
+            <span class="agenda-count"><%= @upcoming_bookings.count %></span>
+          </div>
+
+          <% if @upcoming_bookings.any? %>
+            <div class="agenda-list">
+              <% @upcoming_bookings.group_by { |b| b.start_at.to_date }.each do |date, bookings| %>
+                <div class="agenda-day">
+                  <div class="agenda-day-label">
+                    <%= I18n.l(date, format: "%A %-d %B") %>
+                  </div>
+                  <% bookings.each do |booking| %>
+                    <div class="agenda-item">
+                      <div class="agenda-time"><%= booking.start_at.strftime("%Hh%M") %></div>
+                      <div class="agenda-details">
+                        <strong><%= booking.horse.name %></strong>
+                        <span>avec <%= booking.coach.user.full_name %></span>
+                      </div>
+                      <span class="agenda-status status-<%= booking.status %>">
+                        <%= booking.status == 'confirmed' ? '✓' : '⏳' %>
+                      </span>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="agenda-empty">
+              <p>Aucun cours prévu</p>
+              <%= link_to "Réserver un cours", coaches_path, class: "btn-small" %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Passés -->
+        <div class="agenda-card">
+          <div class="agenda-card-header">
+            <h3>Historique</h3>
+            <span class="agenda-count"><%= @past_bookings.count %></span>
+          </div>
+
+          <% if @past_bookings.any? %>
+            <div class="agenda-list agenda-list-past">
+              <% @past_bookings.limit(6).each do |booking| %>
+                <div class="agenda-item agenda-item-past">
+                  <div class="agenda-time"><%= I18n.l(booking.start_at, format: "%-d %b") %></div>
+                  <div class="agenda-details">
+                    <strong><%= booking.horse.name %></strong>
+                    <span><%= booking.coach.user.full_name %></span>
+                  </div>
+                  <span class="agenda-status status-done">✓</span>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="agenda-empty">
+              <p>Aucun cours passé</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accès rapide -->
+    <section class="quick-section">
+      <div class="quick-actions">
+        <%= link_to coaches_path, class: "quick-action-btn" do %>
+          <i class="fas fa-search"></i>Trouver un coach
+        <% end %>
+        <%= link_to new_horse_path, class: "quick-action-btn" do %>
+          <i class="fas fa-plus"></i>Ajouter un cheval
+        <% end %>
+        <%= link_to user_path(@user), class: "quick-action-btn" do %>
+          <i class="fas fa-eye"></i>Mon profil public
+        <% end %>
+      </div>
+    </section>
+    </div>
+  </div>
+</div>

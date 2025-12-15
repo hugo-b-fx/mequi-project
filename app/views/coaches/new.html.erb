@@ -94,7 +94,7 @@
                     <div class="col-md-6 specialty-checkbox">
                       <div class="form-check">
                         <%= check_box_tag 'coach[specialities][]', speciality,
-                            @coach.specialities.include?(speciality),
+                            @coach.specialities.to_s.include?(speciality),
                             id: "speciality_#{speciality.parameterize}",
                             class: "form-check-input-mequi form-check-input" %>
                         <%= label_tag "speciality_#{speciality.parameterize}", speciality, class: "form-check-label" %>

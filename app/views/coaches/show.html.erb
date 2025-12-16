@@ -333,14 +333,14 @@
 
               <% 7.times do |i| %>
                 <% day = Date.today + i.days %>
-                <% weekday = day.strftime("%A").downcase %>
+                <% weekday = l(day, format: "%A").downcase %>
                 <% next if availability.days_off.to_s.downcase == weekday %>
 
                 <% day_start = Time.zone.parse("#{day} #{availability.start_time.strftime("%H:%M")}") %>
                 <% day_end   = Time.zone.parse("#{day} #{availability.end_time.strftime("%H:%M")}") %>
 
                 <h6 class="mt-3 mb-2" style="color:#5f3b2f;">
-                  <%= day.strftime("%A %d %B") %>
+                  <%= l(day, format: "%A %d %B") %>
                 </h6>
 
                 <div class="d-flex flex-wrap gap-2">

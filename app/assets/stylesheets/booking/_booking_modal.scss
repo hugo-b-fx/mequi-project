@@ -1,0 +1,185 @@
+/* ============================
+   BOOKING SHEET – STABLE + ANIM
+   ============================ */
+
+.booking-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================
+   CARD
+   ============================ */
+
+.booking-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 720px;
+  height: 90vh;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  padding:20px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================
+   HEADER / PROGRESS
+   ============================ */
+
+.booking-header,
+.booking-progress-wrapper {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+/* Progress */
+.booking-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.booking-progress .step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.booking-progress .step.active {
+  background: #8b5c42;
+  color: #fff;
+}
+
+.booking-progress .line {
+  flex: 1;
+  height: 2px;
+  background: #e5e5e5;
+}
+
+/* ============================
+   BODY
+   ============================ */
+
+.booking-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-body {
+  overflow-y: auto;
+  padding: 24px;
+  flex: 1;
+}
+
+/* ============================
+   STEPS (THE IMPORTANT PART)
+   ============================ */
+
+.booking-step {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+
+  /* keeps layout stable */
+  max-height: 0;
+  overflow: hidden;
+}
+
+.booking-step.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+
+  max-height: 2000px; /* large enough */
+}
+
+/* ============================
+   CONTENT
+   ============================ */
+
+.slot-preview,
+.recap-card {
+  background: #f8f5f2;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+
+.booking-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.booking-footer .hint {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.step-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.step-left {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.step-right {
+  background: #f8f5f2;
+  padding: 16px;
+  border-radius: 12px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#modal-button{
+  margin-top: 20px;
+}
+
+
+/* ============================
+   MOBILE
+   ============================ */
+
+@media (max-width: 768px) {
+  .booking-modal {
+    background: #fff;
+  }
+
+  .booking-card {
+    height: 100vh;
+    max-width: 100%;
+    border-radius: 0;
+  }
+}

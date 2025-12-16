@@ -1,0 +1,82 @@
+
+
+.coach-show-page {
+  background: #f5efe9;
+}
+
+.coach-header-banner {
+  border-radius: 0 0 24px 24px;
+}
+
+.stat-card {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.stat-number {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #5f3b2f;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.card-mequi {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+.card-body{
+  padding: 16px;
+}
+
+.review-card {
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.booking-fixed {
+  position: sticky;
+}
+
+.badge {
+  font-size: 0.8rem;
+}
+
+.btn-brown {
+  background: #5f3b2f;
+  color: #ffffff;
+  border: none;
+
+  &:hover {
+    background: #4c2f26;
+    color: #ffffff;
+  }
+}
+
+.btn-mequi-primary {
+  background: #5f3b2f;
+  color: #ffffff;
+  border-radius: 10px;
+
+  &:hover {
+    background: #4c2f26;
+  }
+}
+
+.btn-mequi-outline {
+  border: 1px solid #5f3b2f;
+  color: #5f3b2f;
+  border-radius: 10px;
+
+  &:hover {
+    background: #5f3b2f;
+    color: #ffffff;
+  }
+}

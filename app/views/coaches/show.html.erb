@@ -1,6 +1,8 @@
 <%= render "shared/public_navbar" %>
+<div data-controller="booking-modal">
+  <div class="coach-show-page bg-light">
 
-<div class="coach-show-page bg-light">
+
 
   <!-- Lien retour -->
   <div class="container pt-4">
@@ -89,9 +91,12 @@
 
               <div class="d-flex flex-column gap-2 mt-3">
                 <% if user_signed_in? %>
-                  <a href="#booking-card" class="btn btn-brown w-100">
+                  <!-- ⚡ Ouvre la modal -->
+                  <button type="button" class="btn btn-brown w-100"
+                          data-action="click->booking-modal#open">
                     Réserver une séance
-                  </a>
+                  </button>
+
                   <%= link_to "Envoyer un message",
                               new_user_session_path,
                               class: "btn btn-outline-secondary w-100" %>
@@ -249,136 +254,6 @@
       <!-- COLONNE DROITE -->
       <div class="col-lg-4">
 
-        <!-- Booking card complète -->
-        <div id="booking-card" class="card-mequi shadow-mequi-lg mb-4 booking-fixed" style="top: 20px;">
-          <div class="card-body">
-
-            <div class="text-center mb-3">
-              <small class="text-muted d-block">Tarif</small>
-              <h2 class="text-mequi-primary mb-0" style="color:#5f3b2f;">
-                <%= @coach.price_per_session %>€
-                <small class="text-muted fs-6">/séance</small>
-              </h2>
-            </div>
-
-            <% if user_signed_in? %>
-              <%= form_with url: bookings_path, method: :post, data: { turbo: false } do %>
-                <%= hidden_field_tag :coach_id, @coach.id %>
-
-                <div class="mb-3">
-                  <label class="form-label">Votre cheval</label>
-                  <% if current_user.horses.any? %>
-                    <% selected_horse_id = params[:horse_id].present? ? params[:horse_id].to_i : current_user.horses.first.id %>
-                    <%= select_tag :horse_id,
-                                   options_from_collection_for_select(current_user.horses, :id, :name, selected_horse_id),
-                                   class: "form-select",
-                                   required: true %>
-                  <% else %>
-                    <select class="form-select" disabled>
-                      <option>Aucun cheval enregistré</option>
-                    </select>
-                    <small class="text-muted">
-                      Ajoutez un cheval dans votre espace pour réserver une séance.
-                    </small>
-                  <% end %>
-                </div>
-
-                <!-- Champs hidden remplis par les créneaux -->
-                <%= hidden_field_tag "booking[start_at]", nil, id: "booking_start_at" %>
-                <%= hidden_field_tag "booking[end_at]", nil, id: "booking_end_at" %>
-
-                <div class="mb-3">
-                  <label class="form-label">Créneau sélectionné</label>
-                  <div id="selected-slot-label" class="form-control bg-light">
-                    Aucun créneau sélectionné pour le moment.
-                  </div>
-                  <small class="text-muted">
-                    Clique sur un créneau disponible dans la liste ci-dessous pour le sélectionner.
-                  </small>
-                </div>
-
-                <%= submit_tag "📞 Réserver ce créneau", class: "btn-mequi-primary btn w-100" %>
-              <% end %>
-            <% else %>
-              <%= link_to "📞 Réserver maintenant",
-                          new_user_registration_path,
-                          class: "btn-mequi-primary btn w-100 mb-2" %>
-              <%= link_to "✉️ Se connecter pour envoyer un message",
-                          new_user_session_path,
-                          class: "btn-mequi-outline btn w-100" %>
-            <% end %>
-
-            <small class="text-muted d-block text-center mt-2">
-              <i class="fas fa-lock me-1"></i>Paiement sécurisé & assistance M’equi
-            </small>
-          </div>
-        </div>
-
-        <!-- Créneaux disponibles (Doctolib-like) -->
-        <div class="card-mequi mb-4">
-          <div class="card-body">
-            <h6 class="form-section-title mb-3">
-              <i class="fas fa-calendar-alt me-2"></i>
-              Créneaux disponibles (7 jours)
-            </h6>
-
-            <% availability = @coach.coach_availabilities.first %>
-
-            <% if availability.present? %>
-              <% booked_slots = @coach.bookings.where(
-                    "start_at >= ? AND start_at <= ?",
-                    Date.today.beginning_of_day,
-                    7.days.from_now.end_of_day
-                  ).pluck(:start_at, :end_at) %>
-
-              <% 7.times do |i| %>
-                <% day = Date.today + i.days %>
-                <% weekday = l(day, format: "%A").downcase %>
-                <% next if availability.days_off.to_s.downcase == weekday %>
-
-                <% day_start = Time.zone.parse("#{day} #{availability.start_time.strftime("%H:%M")}") %>
-                <% day_end   = Time.zone.parse("#{day} #{availability.end_time.strftime("%H:%M")}") %>
-
-                <h6 class="mt-3 mb-2" style="color:#5f3b2f;">
-                  <%= l(day, format: "%A %d %B") %>
-                </h6>
-
-                <div class="d-flex flex-wrap gap-2">
-                  <% current_slot = day_start %>
-                  <% while current_slot < day_end %>
-                    <% slot_end = current_slot + 1.hour %>
-
-                    <% overlapping = booked_slots.any? do |b_start, b_end|
-                      (current_slot < b_end) && (slot_end > b_start)
-                    end %>
-
-                    <% if overlapping %>
-                      <button type="button"
-                              class="btn btn-sm btn-outline-secondary disabled"
-                              style="opacity:0.5; pointer-events:none;">
-                        <%= current_slot.strftime("%Hh%M") %>
-                      </button>
-                    <% else %>
-                      <% label = "#{day.strftime("%A %d %B")} · #{current_slot.strftime("%Hh%M")}–#{slot_end.strftime("%Hh%M")}" %>
-                      <button type="button"
-                              class="btn btn-sm btn-brown"
-                              onclick="selectSlot('<%= current_slot.iso8601 %>', '<%= slot_end.iso8601 %>', '<%= j label %>')">
-                        <%= current_slot.strftime("%Hh%M") %>
-                      </button>
-                    <% end %>
-
-                    <% current_slot += 1.hour %>
-                  <% end %>
-                </div>
-              <% end %>
-            <% else %>
-              <p class="text-muted small mb-0">
-                Les disponibilités de ce coach ne sont pas encore renseignées.
-              </p>
-            <% end %>
-          </div>
-        </div>
-
         <!-- Garantie -->
         <div class="card-mequi bg-mequi-light">
           <div class="card-body text-center">
@@ -397,21 +272,207 @@
 
 </div>
 
-<script>
-  function selectSlot(startAtISO, endAtISO, label) {
-    const startField = document.getElementById("booking_start_at");
-    const endField   = document.getElementById("booking_end_at");
-    const labelDiv   = document.getElementById("selected-slot-label");
+<!-- ========================= -->
+<!-- ✅ MODAL MULTI-STEP BOOKING -->
+<!-- ========================= -->
+<% if user_signed_in? %>
+  <div id="bookingModal"
+       class="booking-modal d-none"
+       data-booking-modal-target="modal">
 
-    if (!startField || !endField || !labelDiv) return;
+    <div class="booking-backdrop" data-action="click->booking-modal#close"></div>
 
-    startField.value = startAtISO;
-    endField.value   = endAtISO;
-    labelDiv.textContent = label;
+    <div class="booking-card">
 
-    const bookingCard = document.getElementById("booking-card");
-    if (bookingCard) {
-      bookingCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-</script>
+      <!-- HEADER -->
+      <div class="booking-header">
+        <div>
+          <div class="small text-muted">Réservation</div>
+          <div class="fw-semibold" style="color:#5f3b2f;">
+            Séance avec <%= @coach.user.first_name %>
+          </div>
+        </div>
+        <button type="button"
+                class="btn btn-sm btn-light"
+                data-action="click->booking-modal#close">
+          ✕
+        </button>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="booking-progress-wrapper">
+        <div class="booking-progress">
+          <div class="step active" data-booking-modal-target="progressStep">1</div>
+          <div class="line"></div>
+          <div class="step" data-booking-modal-target="progressStep">2</div>
+          <div class="line"></div>
+          <div class="step" data-booking-modal-target="progressStep">3</div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <%= form_with url: bookings_path, method: :post, data: { turbo: false }, class: "booking-form" do %>
+        <%= hidden_field_tag :coach_id, @coach.id %>
+
+        <div class="booking-body">
+
+          <!-- ================= STEP 1 ================= -->
+          <div class="booking-step active" data-booking-modal-target="step">
+            <h5 class="mb-3">Quel cheval participera à la séance ?</h5>
+
+            <%= select_tag :horse_id,
+              options_from_collection_for_select(current_user.horses, :id, :name, current_user.horses.first.id),
+              class: "form-select",
+              required: true,
+              data: { action: "change->booking-modal#selectHorse" } %>
+
+            <div class="step-actions">
+              <button type="button"
+                      class="btn btn-brown"
+                      id="modal-button"
+                      data-action="click->booking-modal#next"
+                      disabled
+                      data-booking-modal-target="nextBtn">
+                Continuer
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= STEP 2 ================= -->
+          <div class="booking-step" data-booking-modal-target="step">
+
+            <div class="step-grid">
+
+              <!-- COLONNE GAUCHE : CRÉNEAUX -->
+              <div class="step-left">
+                <h5 class="mb-2">Choisis un créneau disponible</h5>
+                <p class="text-muted small mb-3">
+                  Sélectionne un créneau ci-dessous (7 jours).
+                </p>
+
+                <% availability = @coach.coach_availabilities.first %>
+
+                <% if availability.present? %>
+                  <% booked_slots = @coach.bookings.where(
+                        "start_at >= ? AND start_at <= ?",
+                        Date.today.beginning_of_day,
+                        7.days.from_now.end_of_day
+                      ).pluck(:start_at, :end_at) %>
+
+                  <% 7.times do |i| %>
+                    <% day = Date.today + i.days %>
+                    <% weekday = l(day, format: "%A").downcase %>
+                    <% next if availability.days_off.to_s.downcase == weekday %>
+
+                    <% day_start = Time.zone.parse("#{day} #{availability.start_time.strftime("%H:%M")}") %>
+                    <% day_end   = Time.zone.parse("#{day} #{availability.end_time.strftime("%H:%M")}") %>
+
+                    <h6 class="mt-3 mb-2" style="color:#5f3b2f;">
+                      <%= l(day, format: "%A %d %B") %>
+                    </h6>
+
+                    <div class="d-flex flex-wrap gap-2">
+                      <% current_slot = day_start %>
+                      <% while current_slot < day_end %>
+                        <% slot_end = current_slot + 1.hour %>
+
+                        <% overlapping = booked_slots.any? { |b_start, b_end| current_slot < b_end && slot_end > b_start } %>
+
+                        <% if overlapping %>
+                          <button type="button"
+                                  class="btn btn-sm btn-outline-secondary disabled">
+                            <%= current_slot.strftime("%Hh%M") %>
+                          </button>
+                        <% else %>
+                          <% label = "#{l(day, format: "%A %d %B")} · #{current_slot.strftime("%Hh%M")}–#{slot_end.strftime("%Hh%M")}" %>
+                          <button type="button"
+                                  class="btn btn-sm btn-brown"
+                                  data-action="click->booking-modal#pickSlot"
+                                  data-start-at="<%= current_slot.iso8601 %>"
+                                  data-end-at="<%= slot_end.iso8601 %>"
+                                  data-label="<%= j label %>">
+                            <%= current_slot.strftime("%Hh%M") %>
+                          </button>
+                        <% end %>
+
+                        <% current_slot += 1.hour %>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% end %>
+
+                <%= hidden_field_tag "booking[start_at]", nil, data: { booking_modal_target: "startAt" } %>
+                <%= hidden_field_tag "booking[end_at]", nil, data: { booking_modal_target: "endAt" } %>
+              </div>
+
+              <!-- COLONNE DROITE : RÉCAP + CTA -->
+              <div class="step-right">
+                <div class="slot-preview mb-3">
+                  <strong>Créneau sélectionné</strong>
+                  <div data-booking-modal-target="slotPreview">Aucun</div>
+                </div>
+
+                <div class="step-actions between">
+                  <button type="button"
+                          class="btn btn-outline-secondary"
+                          data-action="click->booking-modal#prev">
+                    Retour
+                  </button>
+
+                  <button type="button"
+                          class="btn btn-brown"
+                          data-action="click->booking-modal#next"
+                          disabled
+                          data-booking-modal-target="nextBtn">
+                    Continuer
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= STEP 3 ================= -->
+          <div class="booking-step" data-booking-modal-target="step">
+            <h5 class="mb-3">Confirmation</h5>
+
+            <div class="recap-card">
+              <p><strong>Coach</strong><br><%= @coach.user.full_name %></p>
+              <p><strong>Cheval</strong><br>
+                <span data-booking-modal-target="recapHorse"></span>
+              </p>
+              <p><strong>Date & heure</strong><br>
+                <span data-booking-modal-target="recapSlot"></span>
+              </p>
+              <p><strong>Prix</strong><br>
+                <%= @coach.price_per_session %>€ / séance
+              </p>
+            </div>
+
+            <div class="step-actions between">
+              <button type="button"
+                      class="btn btn-outline-secondary"
+                      data-action="click->booking-modal#prev">
+                Retour
+              </button>
+
+              <button type="submit" class="btn btn-success">
+                ✅ Confirmer et réserver
+              </button>
+            </div>
+          </div>
+
+        </div>
+      <% end %>
+
+      <!-- FOOTER -->
+      <div class="booking-footer">
+        🔒 Paiement sécurisé & assistance M’equi
+      </div>
+
+    </div>
+  </div>
+<% end %>
+
+
+</div>

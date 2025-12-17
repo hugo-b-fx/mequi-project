@@ -16,7 +16,7 @@
         <div class="rider-info">
           <h1><%= @user.full_name %></h1>
           <div class="rider-meta">
-            <span><i class="fas fa-horse-head"></i><%= @stats[:horses_count] %> cheval<%= @stats[:horses_count] > 1 ? 'x' : '' %></span>
+            <span><i class="fas fa-horse-head"></i><%= pluralize(@stats[:horses_count], "cheval", "chevaux") %></span>
             <span><i class="fas fa-graduation-cap"></i><%= @stats[:total_lessons] %> cours</span>
             <span><i class="fas fa-clock"></i><%= @stats[:total_hours] %>h</span>
             <span><i class="fas fa-heart"></i><%= @stats[:favorites_count] %> favoris</span>
@@ -285,6 +285,9 @@
                     <strong><%= booking.horse.name %></strong>
                     <span><%= booking.coach.user.full_name %></span>
                   </div>
+                  <% if booking.coach.specialities.present? %>
+                    <span class="session-tag"><%= booking.coach.specialities_list.first %></span>
+                  <% end %>
                   <span class="agenda-status status-done">✓</span>
                 </div>
               <% end %>

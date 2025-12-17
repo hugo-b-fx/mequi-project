@@ -38,3 +38,8 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Claude files
+CLAUDE.md
+claude*.md
+.claude/

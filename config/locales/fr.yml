@@ -1,5 +1,14 @@
 fr:
+  time:
+    formats:
+      default: "%d %B %Y %H:%M"
+      long: "%A %d %B %Y à %H:%M"
+      short: "%d %b %H:%M"
   date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%A %d %B %Y"
+      short: "%d %b"
     day_names:
       - dimanche
       - lundi
